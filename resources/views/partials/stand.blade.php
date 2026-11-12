@@ -4,7 +4,7 @@
     @forelse(collect($uploads)->only($soorten) as $k => $u)
         <span><i class="bi bi-file-earmark-excel text-success me-1"></i>{{ $u['label'] ?? $k }}:
             @if(!empty($u['moment']))
-                <strong class="{{ !empty($u['verouderd']) ? 'verouderd' : '' }}">{{ \Carbon\Carbon::parse($u['moment'])->isToday() ? 'vandaag' : \Carbon\Carbon::parse($u['moment'])->format('d-m') }} {{ \Carbon\Carbon::parse($u['moment'])->format('H:i') }}</strong>@if(!empty($u['door'])) door {{ $u['door'] }}@endif@if(!empty($u['verouderd'])) <span class="verouderd">· verouderd</span>@endif
+                <strong class="{{ !empty($u['verouderd']) ? 'verouderd' : '' }}">{{ \Carbon\Carbon::parse($u['moment'])->isToday() ? 'vandaag' : \Carbon\Carbon::parse($u['moment'])->format('d-m') }} {{ \Carbon\Carbon::parse($u['moment'])->format('H:i') }}</strong>@if(!empty($u['door'])) door {{ $u['door'] }} @endif @if(!empty($u['verouderd'])) <span class="verouderd">· verouderd</span> @endif
             @else
                 <span class="verouderd">nog niet geüpload</span>
             @endif
