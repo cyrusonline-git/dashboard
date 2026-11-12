@@ -28,7 +28,10 @@ class PlanbordController extends Controller
         $kolom = fn ($d) => $d === null ? 'later' : ($d === $vandaag ? 'vandaag' : ($d === $morgen ? 'morgen' : ($d <= $eindWeek ? 'week' : 'later')));
         $kolommen = ['vandaag' => 'Vandaag', 'morgen' => 'Morgen', 'week' => 'Rest van de week', 'later' => 'Later'];
         $verdeel = function ($lijst) use ($kolommen, $kolom) {
-            $per = array_fill_keys(array_keys($kolommen), collect());
+            $per = [];
+            foreach (array_keys($kolommen) as $k) {
+                $per[$k] = collect(); // per kolom een EIGEN collectie (array_fill_keys deelt één object)
+            }
             foreach ($lijst->sortBy('delivery_date') as $o) {
                 $per[$kolom($o['delivery_date'])]->push($o);
             }

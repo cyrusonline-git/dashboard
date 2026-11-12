@@ -37,14 +37,14 @@
         @endif
     </div>
     <div class="col-lg-8">
-        <div class="card"><div class="card-header">Artikelregels ({{ $regels->count() }}) <small class="text-muted fw-normal">uit 2.6 — na levering staan de artikelen in "In huur"</small></div>
+        <div class="card"><div class="card-header">Artikelregels ({{ $regels->count() }}) <small class="text-muted fw-normal">{{ ($order['regels_bron'] ?? null) === 'planning_regels' ? 'uit 8.7 (regels-export)' : 'uit 2.6' }} — na levering staan de artikelen in "In huur"</small></div>
             <div class="table-responsive"><table class="table table-sm mb-0">
                 <thead><tr><th>Artikelnr</th><th>Omschrijving</th><th class="text-end">Aantal</th><th>Type</th><th>Lever</th><th>Huur t/m</th></tr></thead>
                 <tbody>
                 @forelse($regels as $r)
                     <tr><td><code>{{ $r['item_number'] }}</code></td><td>{{ $r['item_description'] }}</td><td class="text-end">{{ $r['qty'] + 0 }}</td><td class="small text-muted">{{ $r['type'] }}</td><td class="small">{{ dmy($r['delivery_date']) }}</td><td class="small">{{ dmy($r['hire_end_date']) }} {{ $r['hire_end_time'] ?? '' }}</td></tr>
                 @empty
-                    <tr><td colspan="6" class="text-muted">Geen regels in de 2.6-export voor deze order (alleen in 8.7).</td></tr>
+                    <tr><td colspan="6" class="text-muted">Geen artikelregels in de exports voor deze order. Upload in CORE naast de platte 8.7-View ook de gegroepeerde 8.7-export met artikelregels (kaart "Planning: artikelregels"), dan verschijnen ze hier.</td></tr>
                 @endforelse
                 </tbody></table></div>
         </div>
