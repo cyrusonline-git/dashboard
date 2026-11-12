@@ -33,11 +33,8 @@ Route::middleware('core')->group(function () {
     Route::get('/in-huur/machine/{nummer}', [HuurController::class, 'machine'])->name('huur.machine');
     Route::get('/in-huur/{nr}', [HuurController::class, 'show'])->whereNumber('nr')->name('huur.show');
 
-    // Planbord (expeditie): kolommen per medewerker, slepen = toewijzen, vrije kaartjes
+    // Planbord: aankomende orders op tijd (alleen-lezen), transfers apart
     Route::get('/planbord', [\App\Http\Controllers\PlanbordController::class, 'index'])->name('planbord');
-    Route::post('/planbord/taak', [\App\Http\Controllers\PlanbordController::class, 'taakOpslaan'])->name('planbord.taak');
-    Route::post('/planbord/taak/{taak}/klaar', [\App\Http\Controllers\PlanbordController::class, 'taakKlaar'])->name('planbord.taak.klaar');
-    Route::delete('/planbord/taak/{taak}', [\App\Http\Controllers\PlanbordController::class, 'taakVerwijderen'])->name('planbord.taak.verwijder');
 
     // Beheer (admin)
     Route::middleware('rol:admin')->group(function () {
