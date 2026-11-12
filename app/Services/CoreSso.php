@@ -49,52 +49,91 @@ class CoreSso
     }
 
     /**
-     * Badges (open aantallen per app) van de ingelogde gebruiker:
-     * [ {slug, name, url, icon, color, count}, … ]. null bij storing.
+     * Willekeurig CORE-API-endpoint (GET) namens de ingelogde gebruiker, met korte cache
+     * per gebruiker. Geeft het JSON-antwoord als array, of null bij storing/geen toegang.
      */
-    public function badges(bool $force = false): ?array
+    public function api(string $endpoint, array $query = [], int $ttl = 60): ?array
     {
-        if ($this->fakeUser()) {
-            return [
-                ['slug' => 'projectschade', 'name' => 'Projectschade', 'url' => 'https://projectschade.sorai.nl', 'icon' => 'bi-cone-striped', 'color' => '#FF6600', 'count' => 3],
-                ['slug' => 'tankapp', 'name' => 'Tankapp', 'url' => 'https://tankapp.sorai.nl', 'icon' => 'bi-fuel-pump', 'color' => '#FF6600', 'count' => 0],
-                ['slug' => 'spoedverhuur', 'name' => 'Spoedverhuur', 'url' => 'https://spoedverhuur.sorai.nl', 'icon' => 'bi-telephone', 'color' => '#FF6600', 'count' => 1],
-            ];
+        $cookie = $this->coreCookies();
+        if ($cookie === '' && ! $this->fakeUser()) {
+            return null;
         }
-        $data = $this->relay('/api/badges', 'core_badges', $force);
-
-        return is_array($data) ? array_values($data) : null;
-    }
-
-    /**
-     * Badges van ALLE gebruikers (alleen voor managers/beheerders van deze app volgens CORE):
-     * [ {email, name, app, count}, … ]. null bij storing of geen recht.
-     */
-    public function badgesAlle(): ?array
-    {
-        if ($this->fakeUser()) {
-            return [
-                ['email' => 'anne.vasseur@boels.nl', 'name' => 'Anne Vasseur', 'app' => 'projectschade', 'count' => 2],
-                ['email' => 'justin.bikker@boels.nl', 'name' => 'Justin Bikker', 'app' => 'tankapp', 'count' => 4],
-                ['email' => 'test@boels.nl', 'name' => 'Test Gebruiker (lokaal)', 'app' => 'projectschade', 'count' => 3],
-            ];
-        }
-        $key = 'core_badges_alle_'.(int) (core_gebruiker()['id'] ?? 0);
-
-        return Cache::remember($key, 120, function () {
-            $cookie = $this->coreCookies();
-            if ($cookie === '') {
-                return null;
-            }
+        $url = $endpoint.($query ? (str_contains($endpoint, '?') ? '&' : '?').http_build_query(array_filter($query, fn ($v) => $v !== null && $v !== '')) : '');
+        $gid = (int) (core_gebruiker()['id'] ?? 0);
+        $sleutel = 'core_api:'.$gid.':'.(int) Cache::get('core_api_gen:'.$gid, 0).':'.md5($url);
+        $haal = function () use ($url, $cookie) {
             foreach ([config('core.app_url'), config('core.url')] as $referer) {
-                $data = $this->callRaw('/api/badges/alle', $cookie, $referer);
+                $data = $this->callRaw($url, $cookie, $referer);
                 if ($data !== null) {
-                    return array_values($data['data'] ?? $data);
+                    return $data;
                 }
             }
 
             return null;
-        });
+        };
+        if ($ttl <= 0) {
+            return $haal();
+        }
+        $data = Cache::remember($sleutel, $ttl, fn () => $haal() ?? ['__leeg' => true]);
+
+        return isset($data['__leeg']) ? null : $data;
+    }
+
+    /**
+     * POST naar de CORE-API namens de ingelogde gebruiker. Haalt eerst een vers
+     * XSRF-token op bij CORE (/sanctum/csrf-cookie) zodat de eigen XSRF-cookie van
+     * deze app (zelfde naam) nooit in de weg zit.
+     */
+    public function apiPost(string $endpoint, array $data): ?array
+    {
+        $cookie = implode('; ', array_filter(explode('; ', $this->coreCookies()), fn ($c) => ! str_starts_with($c, 'XSRF-TOKEN=')));
+        if ($cookie === '') {
+            return null;
+        }
+        $xsrf = null;
+        try {
+            $res = Http::timeout(8)->withHeaders(['Accept' => 'application/json', 'Referer' => config('core.app_url').'/', 'Cookie' => $cookie])->get(config('core.url').'/sanctum/csrf-cookie');
+            foreach ($res->cookies()->toArray() as $c) {
+                if (($c['Name'] ?? '') === 'XSRF-TOKEN') {
+                    $xsrf = urldecode((string) $c['Value']);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('CORE csrf-cookie mislukt: '.$e->getMessage());
+        }
+        if (! $xsrf) {
+            return null;
+        }
+        $cookie .= '; XSRF-TOKEN='.rawurlencode($xsrf);
+        foreach ([config('core.app_url'), config('core.url')] as $referer) {
+            try {
+                $res = Http::timeout(10)->withHeaders([
+                    'Accept' => 'application/json',
+                    'Referer' => $referer.'/',
+                    'Cookie' => $cookie,
+                    'X-XSRF-TOKEN' => $xsrf,
+                ])->post(config('core.url').$endpoint, $data);
+            } catch (\Throwable $e) {
+                Log::warning('CORE-post mislukt: '.$e->getMessage(), ['endpoint' => $endpoint]);
+                continue;
+            }
+            if ($res->successful()) {
+                $this->vergeetApiCache();
+
+                return $res->json() ?: ['ok' => true];
+            }
+            Log::warning('CORE-post geweigerd: '.$res->status(), ['endpoint' => $endpoint, 'body' => mb_substr($res->body(), 0, 300)]);
+        }
+
+        return null;
+    }
+
+    /** API-cache van deze gebruiker leegmaken (na een wijziging). */
+    public function vergeetApiCache(): void
+    {
+        // Cache-sleutels zijn per gebruiker+url; zonder tags verhogen we een generatie-nummer
+        $gid = (int) (core_gebruiker()['id'] ?? 0);
+        Cache::put('core_api_gen:'.$gid, time(), 3600);
     }
 
     /** Alle actieve medewerkerkaarten uit CORE (GET /api/employees, gepagineerd). null bij storing. */
@@ -164,7 +203,7 @@ class CoreSso
     /** Alles wat over de CORE-gebruiker in de sessie staat weggooien. */
     public function vergeet(): void
     {
-        foreach (['core_user', 'core_access', 'core_badges'] as $k) {
+        foreach (['core_user', 'core_access'] as $k) {
             $this->request->session()->forget([$k, $k.'_at']);
         }
     }

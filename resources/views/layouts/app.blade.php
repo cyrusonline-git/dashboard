@@ -34,6 +34,16 @@
         .page-header h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
         .page-header p { color: #6c757d; margin: 0; }
         footer { color: #999; font-size: .8rem; }
+        .dag-kop { background: #333; color: #fff; border-radius: 10px; padding: 8px 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .order-rij { background: #fff; border-radius: 10px; padding: 10px 14px; margin-top: 6px; display: grid; grid-template-columns: 1.6fr 1fr 1.1fr 1fr 1.2fr .9fr; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+        .order-rij.volledig { background: #e8f5e9; } .order-rij.deels { background: #fff3e0; } .order-rij.te-laat { background: #fdecea; } .order-rij.offerte { background: #ede7f6; }
+        .pick { display: inline-block; min-width: 92px; text-align: center; border-radius: 12px; padding: 2px 10px; font-size: .8rem; font-weight: 600; }
+        .pick.volledig { background: #2e7d32; color: #fff; } .pick.deels { background: #ef6c00; color: #fff; } .pick.niets { background: #eee; color: #555; } .pick.onbekend, .pick.geen_regels { background: #f5f5f5; color: #999; }
+        .soort-badge { font-size: .7rem; font-weight: 700; letter-spacing: .3px; border-radius: 6px; padding: 2px 8px; color: #fff; text-transform: uppercase; }
+        .soort-huur { background: #FF6600; } .soort-verkoop { background: #1976d2; } .soort-transfer_in, .soort-transfer_uit { background: #00897b; } .soort-retour { background: #c62828; } .soort-offerte { background: #6f42c1; } .soort-overig { background: #777; }
+        .stand-balk { font-size: .8rem; color: #666; } .stand-balk .verouderd { color: #c62828; font-weight: 600; }
+        .reden-form textarea { min-height: 38px; }
+        @media (max-width: 991px) { .order-rij { grid-template-columns: 1fr 1fr; } }
         .table thead th { font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; color: #777; border-bottom: 2px solid #eee; }
         .form-control:focus, .form-select:focus { border-color: var(--boels-orange); box-shadow: 0 0 0 .2rem rgba(255,102,0,.15); }
     </style>
@@ -53,6 +63,24 @@
             @if($rol)
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>Start</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('planning', 'planning.*') ? 'active' : '' }}" href="{{ route('planning') }}"><i class="bi bi-calendar-check me-1"></i>Planning</a></li>
+                @if(\App\Services\Rollen::magFactuurrun($rol))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('factuurrun', 'factuurrun.*') ? 'active' : '' }}" href="{{ route('factuurrun') }}"><i class="bi bi-receipt me-1"></i>Factuurrun</a></li>
+                @endif
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('huur', 'huur.*') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown"><i class="bi bi-box-seam me-1"></i>In huur</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('huur') }}"><i class="bi bi-list-ul me-2"></i>Contracten in huur</a></li>
+                        <li><a class="dropdown-item" href="{{ route('huur.ophalen') }}"><i class="bi bi-truck me-2"></i>Ophaallijst (afgemeld)</a></li>
+                        @if(\App\Services\Rollen::magAvi($rol))<li><a class="dropdown-item" href="{{ route('huur.avi') }}"><i class="bi bi-cash-coin me-2"></i>AVI — weekhuur per klant</a></li>@endif
+                    </ul>
+                </li>
+                @if(\App\Services\Rollen::magTeam($rol))
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('team') ? 'active' : '' }}" href="{{ route('team') }}"><i class="bi bi-people me-1"></i>Team</a></li>
+                @endif
+                @if($rol === 'admin')
+                <li class="nav-item"><a class="nav-link" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-1"></i>Uploads SAP <i class="bi bi-box-arrow-up-right small"></i></a></li>
+                @endif
             </ul>
             @endif
             <ul class="navbar-nav ms-auto align-items-lg-center">

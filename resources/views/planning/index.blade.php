@@ -1,0 +1,48 @@
+@extends('layouts.app')
+@section('titel', $f['verleden'] ? 'Op te schonen' : 'Planning')
+@section('inhoud')
+<div class="page-header mb-2 d-flex justify-content-between align-items-end flex-wrap gap-2">
+    <div>
+        <h1>{{ $f['verleden'] ? 'Op te schonen' : 'Planning' }}</h1>
+        <p>{{ $f['verleden'] ? 'Orders met een leverdatum vóór vandaag die nog in SAP open staan — afsluiten of herplannen.' : 'Te leveren huur- en verkooporders, transfers en offertes; pickstand komt uit SAP (8.7), regels en waarde uit 2.6.' }}</p>
+    </div>
+    <div class="btn-group">
+        <a href="{{ route('planning', array_filter(['q' => $f['q'], 'mijn' => request('mijn')])) }}" class="btn btn-sm {{ !$f['verleden'] && !$f['alles'] ? 'btn-boels' : 'btn-outline-boels' }}">Vandaag en later</a>
+        <a href="{{ route('planning', array_filter(['verleden' => 1, 'q' => $f['q'], 'mijn' => request('mijn')])) }}" class="btn btn-sm {{ $f['verleden'] ? 'btn-boels' : 'btn-outline-boels' }}">Op te schonen</a>
+        <a href="{{ route('planning', array_filter(['alles' => 1, 'q' => $f['q'], 'mijn' => request('mijn')])) }}" class="btn btn-sm {{ $f['alles'] ? 'btn-boels' : 'btn-outline-boels' }}">Alles</a>
+    </div>
+</div>
+@include('partials.stand', ['uploads' => $res['uploads'] ?? [], 'soorten' => ['planning', 'reserveringen']])
+
+<form class="card mb-3" method="get">
+    @if($f['verleden'])<input type="hidden" name="verleden" value="1">@endif @if($f['alles'])<input type="hidden" name="alles" value="1">@endif
+    <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+        <input type="search" name="q" value="{{ $f['q'] }}" class="form-control form-control-sm" style="max-width:260px" placeholder="Zoek klant, order, referentie…">
+        <select name="soort" class="form-select form-select-sm" style="max-width:170px">
+            <option value="">Alle soorten</option>
+            @foreach(['huur'=>'Huurorders','verkoop'=>'Verkooporders','transfer_in'=>'Transfers in','transfer_uit'=>'Transfers uit','offerte'=>'Offertes','retour'=>'Retouren'] as $k=>$l)<option value="{{ $k }}" @selected($f['soort']===$k)>{{ $l }}</option>@endforeach
+        </select>
+        <select name="employee_id" class="form-select form-select-sm" style="max-width:200px">
+            <option value="">Alle verkopers</option>
+            @foreach($verkopers as $id => $naam)<option value="{{ $id }}" @selected((string)$f['employee_id']===(string)$id)>{{ $naam }}</option>@endforeach
+        </select>
+        <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked(request()->boolean('mijn'))> alleen mijn orders</label>
+        <button class="btn btn-sm btn-boels">Filter</button>
+        <span class="ms-auto small text-muted">{{ $res['totaal']['orders'] ?? 0 }} orders ·
+            @foreach(($res['totaal']['per_pick_status'] ?? []) as $k => $n)<span class="me-1">{{ $k }}: {{ $n }}</span>@endforeach</span>
+    </div>
+</form>
+
+@forelse($perDag as $dag => $orders)
+    <div class="dag-kop mt-3">
+        <span>{{ $dag === 'geen' ? 'Zonder leverdatum' : \Carbon\Carbon::parse($dag)->translatedFormat('l j F Y') }}
+            @if($dag === now()->toDateString())<span class="badge bg-boels ms-2">vandaag</span>@elseif($dag !== 'geen' && $dag < now()->toDateString())<span class="badge bg-danger ms-2">{{ relatief($dag) }}</span>@endif</span>
+        <span class="small fw-normal">{{ $orders->count() }} orders · {{ $orders->where('pick_status','volledig')->count() }} volledig gepickt</span>
+    </div>
+    @foreach($orders as $o)
+        @include('planning.rij', ['o' => $o])
+    @endforeach
+@empty
+    <div class="card"><div class="card-body text-muted">Geen orders gevonden{{ $res === null ? ' (CORE niet bereikbaar of nog geen upload)' : '' }}.</div></div>
+@endforelse
+@endsection
