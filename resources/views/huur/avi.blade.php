@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('titel', 'AVI — weekhuur per klant')
 @section('inhoud')
-<div class="page-header mb-2"><h1>AVI — weekhuur in huur</h1><p>Som van de netto weekhuur (weektarief na korting × aantal) van alles wat in huur staat, per klant en per project, uit de laatste WOW-export.</p></div>
+<div class="page-header mb-2"><h1>AVI — weekhuur in huur <a href="{{ route('huur.avi', ['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary ms-2" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a></h1><p>Som van de netto weekhuur (weektarief na korting × aantal) van alles wat in huur staat, per klant en per project, uit de laatste WOW-export.</p></div>
 @include('partials.stand', ['uploads' => ['wow' => ($s['upload'] ?? []) + ['label' => 'In huur (WOW)']]])
 @if(empty($s['beschikbaar']))
     <div class="alert alert-warning">Nog geen WOW-upload of CORE niet bereikbaar.</div>

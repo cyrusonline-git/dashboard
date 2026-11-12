@@ -23,6 +23,7 @@
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="zonder_reden" value="1" @checked($f['zonder_reden'])> zonder reden</label>
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="nooit" value="1" @checked($f['nooit'])> nooit gefactureerd</label>
         <button class="btn btn-sm btn-boels">Filter</button>
+        <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
     </div>
 </form>
 

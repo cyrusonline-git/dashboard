@@ -25,11 +25,9 @@
             </div>
         </div>
         @if(\App\Services\Rollen::magNotitie())
-        <div class="card"><div class="card-header">Opmerking / toewijzing</div>
+        <div class="card"><div class="card-header">Opmerking</div>
             <form method="post" action="{{ route('planning.notitie', $order['order_number']) }}" class="card-body">
                 @csrf
-                <div class="mb-2"><label class="form-label small mb-1">Expeditiemedewerker</label>
-                    <select name="expeditie_employee_id" class="form-select form-select-sm"><option value="">—</option>@foreach($medewerkers as $m)<option value="{{ $m['id'] }}" @selected(($order['note']['expeditie_employee_id'] ?? null) == $m['id'])>{{ $m['name'] }}</option>@endforeach</select></div>
                 <div class="mb-2"><label class="form-label small mb-1">Opmerking</label><textarea name="opmerking" class="form-control form-control-sm" rows="2">{{ $order['note']['opmerking'] ?? '' }}</textarea></div>
                 <div class="form-check mb-2"><input class="form-check-input" type="checkbox" name="vlag" value="1" id="vlag" @checked(!empty($order['note']['vlag']))><label class="form-check-label small" for="vlag">Markeren (vlag)</label></div>
                 <button class="btn btn-boels btn-sm">Opslaan</button>

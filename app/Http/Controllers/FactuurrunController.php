@@ -21,6 +21,10 @@ class FactuurrunController extends Controller
             'nooit' => $request->boolean('nooit') ? 1 : null,
         ];
         $res = $core->api('/api/hire/invoice-run', $f, 60);
+        if ($request->input('export') === 'csv') {
+            return \App\Support\Csv::download('uit-factuurrun', ['Contract', 'Klant', 'Klantnr', 'Aanmaker', 'Regels', 'Start', 'Laatste factuur', 'Dagen zonder factuur', 'Weekhuur', 'Reden', 'Status', 'Referentie', 'Besteld door'],
+                collect($res['data'] ?? [])->map(fn ($r) => [$r['contract_number'], $r['customer_name'], $r['customer_number'], $r['employee_name'] ?? $r['created_by_code'], $r['regels'], $r['hire_start_date'], $r['last_invoice_date'] ?? 'nooit', $r['dagen_zonder_factuur'], $r['weekhuur'], $r['reden'], $r['note_status'], $r['customer_reference'], $r['ordered_by']]));
+        }
         $alle = $core->api('/api/hire/invoice-run', [], 300);
 
         return view('factuurrun.index', [

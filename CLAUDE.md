@@ -28,3 +28,10 @@ CORE lokaal op 127.0.0.1:8090 (SQLite, SANCTUM_STATEFUL_DOMAINS incl. 127.0.0.1:
 127.0.0.1:8088 met `CORE_URL=http://127.0.0.1:8090` en `CORE_DEV_FAKE_USER=false`; log in op CORE
 (curl-cookiejar) en open daarna de dashboard-pagina's met dezelfde jar — de CORE-cookie wordt gerelayed.
 Rollen-rechten: `app/Services/Rollen.php`. POSTs naar CORE halen eerst `/sanctum/csrf-cookie` op.
+
+## Planbord (fase 3, 12-11-2026)
+Alleen-lezen tijdbord (te laat · vandaag · morgen · rest van de week · later · retouren) voor iedereen;
+GEEN toewijzen aan expeditiemedewerkers (dat gebeurt in InspHire, komt met de upload mee — Wim).
+Eigen data: alleen `taken` (vrije kaartjes). CSV-export op planning, factuurrun, in huur, ophaallijst, AVI
+via `?export=csv` (`app/Support/Csv.php`). Beheer (admin): naam in de kop + logboek; uploads in CORE.
+Wim wil de indeling later herzien (overlap met CORE-startscherm).

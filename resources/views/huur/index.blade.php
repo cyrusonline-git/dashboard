@@ -8,6 +8,7 @@
     <select name="status" class="form-select form-select-sm" style="max-width:200px"><option value="">Alle statussen</option><option value="Delivered" @selected($f['status']==='Delivered')>In huur</option><option value="To Collect" @selected($f['status']==='To Collect')>Afgemeld (op te halen)</option></select>
     <select name="sort" class="form-select form-select-sm" style="max-width:170px">@foreach(['weekhuur'=>'Weekhuur ↓','hire_date'=>'Startdatum ↓','customer_name'=>'Klant','coll_date'=>'Ophaaldatum'] as $k=>$l)<option value="{{ $k }}" @selected($f['sort']===$k)>{{ $l }}</option>@endforeach</select>
     <button class="btn btn-sm btn-boels">Zoek</button>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
     <span class="ms-auto small text-muted">{{ $res['total'] ?? 0 }} contracten</span>
 </div></form>
 <div class="card"><div class="table-responsive"><table class="table table-sm align-middle mb-0">

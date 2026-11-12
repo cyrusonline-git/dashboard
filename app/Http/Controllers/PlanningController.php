@@ -23,6 +23,10 @@ class PlanningController extends Controller
         ];
         $res = $core->api('/api/planning/orders', $f, 60);
         $rijen = collect($res['data'] ?? []);
+        if ($request->input('export') === 'csv') {
+            return \App\Support\Csv::download($f['verleden'] ? 'op-te-schonen' : 'planning', ['Leverdatum', 'Order', 'Soort', 'Klant', 'Status SAP', 'Gepickt', 'Totaal', 'Pickstand', 'Verkoper', 'Referentie', 'Waarde', 'Regels', 'Aflevering', 'Plaats', 'Opmerking'],
+                $rijen->map(fn ($o) => [$o['delivery_date'], $o['order_number'], $o['soort'], $o['customer_name'], $o['contract_status'], $o['picked'], $o['total'], $o['pick_status'], $o['employee_name'] ?? $o['sales_person'], $o['reference'], $o['goods_value'], $o['regels'], $o['delivery_name'], $o['city'], $o['note']['opmerking'] ?? null]));
+        }
         $perDag = $rijen->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen');
 
         return view('planning.index', [
@@ -31,7 +35,6 @@ class PlanningController extends Controller
             'rijen' => $rijen,
             'perDag' => $perDag,
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
-            'expeditie' => $medewerkers->alle()->filter(fn ($m) => str_contains(mb_strtolower((string) ($m['function'] ?? '')), 'expedit') || str_contains(mb_strtolower((string) ($m['function'] ?? '')), 'magazijn'))->values(),
         ]);
     }
 
@@ -40,13 +43,13 @@ class PlanningController extends Controller
         $res = $core->api('/api/planning/orders/'.$nr, [], 30);
         abort_unless($res, 404, 'Order niet gevonden in de laatste planning-exports.');
 
-        return view('planning.show', ['order' => $res['order'], 'regels' => collect($res['regels'] ?? []), 'medewerkers' => app(Medewerkers::class)->alle()]);
+        return view('planning.show', ['order' => $res['order'], 'regels' => collect($res['regels'] ?? [])]);
     }
 
     public function notitie(string $nr, Request $request, CoreSso $core)
     {
         abort_unless(Rollen::magNotitie(), 403);
-        $data = $request->validate(['opmerking' => ['nullable', 'string', 'max:2000'], 'expeditie_employee_id' => ['nullable', 'integer'], 'vlag' => ['nullable', 'boolean']]);
+        $data = $request->validate(['opmerking' => ['nullable', 'string', 'max:2000'], 'vlag' => ['nullable', 'boolean']]);
         $data['vlag'] = $request->boolean('vlag');
         $ok = $core->apiPost('/api/planning/orders/'.$nr.'/note', $data);
         audit('planning.notitie', $nr, $data);

@@ -7,6 +7,7 @@
     <label class="small">van <input type="date" name="van" value="{{ $f['van'] ?? '' }}" class="form-control form-control-sm d-inline-block" style="width:auto"></label>
     <label class="small">t/m <input type="date" name="tm" value="{{ $f['tm'] ?? '' }}" class="form-control form-control-sm d-inline-block" style="width:auto"></label>
     <button class="btn btn-sm btn-boels">Filter</button>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
     <span class="ms-auto small text-muted">{{ $rijen->count() }} contracten · {{ $rijen->sum('regels') }} regels · {{ $rijen->where('te_laat', true)->count() }} te laat</span>
 </div></form>
 @forelse($perDag as $dag => $items)

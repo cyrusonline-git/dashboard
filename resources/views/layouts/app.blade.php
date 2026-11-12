@@ -43,6 +43,17 @@
         .soort-huur { background: #FF6600; } .soort-verkoop { background: #1976d2; } .soort-transfer_in, .soort-transfer_uit { background: #00897b; } .soort-retour { background: #c62828; } .soort-offerte { background: #6f42c1; } .soort-overig { background: #777; }
         .stand-balk { font-size: .8rem; color: #666; } .stand-balk .verouderd { color: #c62828; font-weight: 600; }
         .reden-form textarea { min-height: 38px; }
+        .bord { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px; align-items: flex-start; }
+        .kolom { flex: 0 0 300px; background: #ececec; border-radius: 12px; padding: 10px; min-height: 200px; }
+        .kolom.drop-ok { outline: 2px dashed var(--boels-orange); background: #fff3e8; }
+        .kolom-kop { display: flex; justify-content: space-between; align-items: center; font-weight: 700; padding: 2px 4px 8px; }
+        .kaart { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 8px; cursor: grab; overflow: hidden; }
+        .kaart.dragging { opacity: .5; }
+        .kaart-kop { color: #fff; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; padding: 4px 10px; display: flex; justify-content: space-between; }
+        .kaart-body { padding: 8px 10px; font-size: .85rem; }
+        .kaart-titel { font-weight: 600; } .kaart .text-rood { color: #c62828; font-weight: 600; }
+        .kaart.te-laat .kaart-body { background: #fdecea; } .kaart.volledig .kaart-body { background: #e8f5e9; }
+        .kaart-taak .kaart-kop { background: #2e7d32; } .kaart-taak.hoog .kaart-kop { background: #c62828; }
         @media (max-width: 991px) { .order-rij { grid-template-columns: 1fr 1fr; } }
         .table thead th { font-size: .8rem; text-transform: uppercase; letter-spacing: .3px; color: #777; border-bottom: 2px solid #eee; }
         .form-control:focus, .form-select:focus { border-color: var(--boels-orange); box-shadow: 0 0 0 .2rem rgba(255,102,0,.15); }
@@ -64,6 +75,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>Start</a></li>
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('planning', 'planning.*') ? 'active' : '' }}" href="{{ route('planning') }}"><i class="bi bi-calendar-check me-1"></i>Planning</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('planbord', 'planbord.*') ? 'active' : '' }}" href="{{ route('planbord') }}"><i class="bi bi-kanban me-1"></i>Planbord</a></li>
                 @if(\App\Services\Rollen::magFactuurrun($rol))
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('factuurrun', 'factuurrun.*') ? 'active' : '' }}" href="{{ route('factuurrun') }}"><i class="bi bi-receipt me-1"></i>Factuurrun</a></li>
                 @endif
@@ -79,7 +91,14 @@
                 <li class="nav-item"><a class="nav-link {{ request()->routeIs('team') ? 'active' : '' }}" href="{{ route('team') }}"><i class="bi bi-people me-1"></i>Team</a></li>
                 @endif
                 @if($rol === 'admin')
-                <li class="nav-item"><a class="nav-link" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-1"></i>Uploads SAP <i class="bi bi-box-arrow-up-right small"></i></a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('beheer') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown"><i class="bi bi-gear me-1"></i>Beheer</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('beheer') }}"><i class="bi bi-sliders me-2"></i>Instellingen &amp; planbordkolommen</a></li>
+                        <li><a class="dropdown-item" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2"></i>Uploads SAP (in CORE) <i class="bi bi-box-arrow-up-right small"></i></a></li>
+                        <li><a class="dropdown-item" href="{{ config('core.url') }}/admin/sap-uploads/codes" target="_blank"><i class="bi bi-person-badge me-2"></i>SAP-codes → medewerkers (in CORE) <i class="bi bi-box-arrow-up-right small"></i></a></li>
+                    </ul>
+                </li>
                 @endif
             </ul>
             @endif

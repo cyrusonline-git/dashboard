@@ -28,6 +28,7 @@
         </select>
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked(request()->boolean('mijn'))> alleen mijn orders</label>
         <button class="btn btn-sm btn-boels">Filter</button>
+        <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
         <span class="ms-auto small text-muted">{{ $res['totaal']['orders'] ?? 0 }} orders ·
             @foreach(($res['totaal']['per_pick_status'] ?? []) as $k => $n)<span class="me-1">{{ $k }}: {{ $n }}</span>@endforeach</span>
     </div>
