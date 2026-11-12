@@ -78,8 +78,11 @@ new Chart(document.getElementById('topklanten'), { type: 'bar', data: { labels: 
 const projecten = {{ (float) $s['weekhuur_projecten'] }}, totaal = {{ (float) $s['weekhuur'] }}, afgemeld = {{ $afgemeldGeld }};
 new Chart(document.getElementById('verdeling'), { type: 'doughnut', data: { labels: ['Op projecten', 'Losse huur', 'Afgemeld (op te halen)'], datasets: [{ data: [projecten, Math.max(0, totaal - projecten - afgemeld), afgemeld], backgroundColor: ['#6f42c1', '#FF6600', '#c62828'], borderWidth: 2 }] },
   options: { cutout: '62%', plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => c.label + ': ' + eur(c.raw) + ' (' + Math.round(c.raw / totaal * 100) + '%)' } } } } });
-const maanden = @json($s['per_maand']);
-const mLabel = m => { const [j, mm] = m.split('-'); return ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'][+mm - 1] + ' ' + j.slice(2); };
+const alleMaanden = @json($s['per_maand']);
+// Laatste 18 maanden los, alles daarvoor samengevat als "eerder"
+const recent = alleMaanden.slice(-18), ouder = alleMaanden.slice(0, -18);
+const maanden = ouder.length ? [{ maand: 'eerder', contracten: ouder.reduce((a, m) => a + +m.contracten, 0), weekhuur: ouder.reduce((a, m) => a + +m.weekhuur, 0) }, ...recent] : recent;
+const mLabel = m => { if (m === 'eerder') return 'eerder'; const [j, mm] = m.split('-'); return ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'][+mm - 1] + ' ' + j.slice(2); };
 new Chart(document.getElementById('maanden'), { type: 'bar', data: { labels: maanden.map(m => mLabel(m.maand)), datasets: [{ label: 'Weekhuur', data: maanden.map(m => m.weekhuur), backgroundColor: maanden.map((m, i) => i >= maanden.length - 3 ? '#FF6600' : '#f3b58a'), borderRadius: 4 }] },
   options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => eur(c.raw) + ' per week · ' + maanden[c.dataIndex].contracten + ' contracten' } } }, scales: { y: { ticks: { callback: eur }, grid: { color: '#eef0f2' } }, x: { grid: { display: false } } } } });
 @if($trend->count() > 1)
