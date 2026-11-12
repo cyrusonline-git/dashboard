@@ -2,9 +2,8 @@
 @section('titel', 'Start')
 @section('inhoud')
 @php($naam = explode(' ', core_gebruiker()['name'] ?? 'collega')[0])
-<div class="page-header mb-3">
-    <h1>Goedendag, {{ $naam }}</h1>
-    <p>{{ rol_naam($rol) }} · {{ now()->translatedFormat('l j F Y') }}</p>
+<div class="page-header">
+    <div><h1>Goedendag, {{ $naam }}</h1><p>{{ rol_naam($rol) }} · {{ ucfirst(now()->translatedFormat('l j F Y')) }}</p></div>
 </div>
 @include('partials.stand', ['uploads' => $uploads])
 
@@ -14,7 +13,7 @@
 
 {{-- Mijn acties --}}
 @if($acties && ($acties['totaal'] ?? 0) > 0)
-<div class="card mb-4 border-start border-4" style="border-color: var(--boels-orange) !important;">
+<div class="card mb-4" style="border-left: 4px solid var(--boels-orange);">
     <div class="card-body py-3">
         <div class="d-flex flex-wrap align-items-center gap-2">
             <strong class="me-2"><i class="bi bi-bell me-1 text-boels"></i>Voor jou: {{ $acties['totaal'] }} open</strong>
