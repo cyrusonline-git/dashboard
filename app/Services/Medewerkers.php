@@ -62,14 +62,17 @@ class Medewerkers
 
     /**
      * Het team van de ingelogde manager: medewerkers in zijn toegestane depots/areas
-     * (uit CORE). Beheerders en super-admins zien iedereen.
+     * (uit CORE). BU-managers, beheerders en super-admins zien iedereen.
      */
     public function team(): Collection
     {
         $alle = $this->alle();
         $rol = actieve_rol();
         $gebruiker = core_gebruiker() ?? [];
-        if ($rol === 'admin' || ! empty($gebruiker['is_super_admin'])) {
+        if (! in_array($rol, config('core.team_rollen', []), true)) {
+            return collect();
+        }
+        if (in_array($rol, ['admin', 'bu_manager'], true) || ! empty($gebruiker['is_super_admin'])) {
             return $alle;
         }
         $depots = array_map('mb_strtolower', (array) session('toegestane_depots', []));

@@ -10,7 +10,7 @@ class DashboardController extends Controller
     public function index(Medewerkers $medewerkers)
     {
         $kaart = session('eigen_kaart');
-        $teamAantal = in_array(actieve_rol(), ['manager', 'admin'], true) ? $medewerkers->team()->count() : null;
+        $teamAantal = in_array(actieve_rol(), config('core.team_rollen', []), true) ? $medewerkers->team()->count() : null;
 
         return view('dashboard.index', compact('kaart', 'teamAantal'));
     }

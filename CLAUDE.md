@@ -5,8 +5,9 @@ andere Boels-apps nog moet doen. **Inhoud nog te bepalen door Wim** — zie `doc
 
 ## Regels
 - Inloggen gebeurt NOOIT hier: `CoreAuth`-middleware relayt de CORE-cookie naar `/api/me` en
-  `/api/access/dashboard`. Rollen: medewerker, manager, admin (`config/core.php`), beheerd in
-  CORE → Beheer → Applicaties/Rollen.
+  `/api/access/dashboard`. Rollen (12-11-2026, per functie; iedereen ziet eigen gegevens): binnendienst, werkplaats,
+  servicedesk, expeditie, area-manager, bu-manager, vlootmanager, admin (`config/core.php`),
+  beheerd in CORE → Beheer → Rollen. Teamzicht: area_manager (eigen area/depots), bu_manager en admin (alles).
 - Huisstijl: oranje `#FF6600`, witte B op oranje (favicon + navbar-brand in `layouts/app.blade.php`).
 - Nederlands in UI en code-commentaar; helpers in `app/Support/helpers.php`.
 - Eigen data (database/*.sqlite, storage/app/uploads) nooit in git; migraties idempotent houden.

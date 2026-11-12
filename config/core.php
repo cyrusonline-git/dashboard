@@ -20,11 +20,21 @@ return [
 
     // Rollen van deze app zoals ze in CORE (Beheer → Applicaties) staan.
     // Slug => weergavenaam. Volgorde = volgorde op het rolkeuzescherm.
+    // Iedereen ziet zijn EIGEN gegevens; de rol bepaalt welk overzicht erbij hoort.
+    // CORE schrijft streepjes (area-manager); hier underscores (CoreSso::rollen vertaalt).
     'rollen' => [
-        'medewerker' => 'Medewerker',
-        'manager'    => 'Manager',
-        'admin'      => 'Beheerder',
+        'binnendienst' => 'Binnendienst',
+        'werkplaats'   => 'Werkplaats',
+        'servicedesk'  => 'Servicedesk',
+        'expeditie'    => 'Expeditie',
+        'area_manager' => 'Area Manager',
+        'bu_manager'   => 'BU Manager',
+        'vlootmanager' => 'Vlootmanager',
+        'admin'        => 'Beheerder',
     ],
+
+    // Rollen die naast het eigen overzicht ook een team zien (depot/area uit CORE)
+    'team_rollen' => ['area_manager', 'bu_manager', 'admin'],
 
     // Alleen lokaal ontwikkelen (APP_ENV=local): nep-gebruiker met alle rollen,
     // zodat de app zonder CORE-cookie te testen is. Nooit op de server zetten.
