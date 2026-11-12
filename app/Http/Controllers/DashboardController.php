@@ -14,7 +14,6 @@ class DashboardController extends Controller
     {
         $rol = actieve_rol();
         $uploads = $core->api('/api/sap/uploads', [], 120) ?? [];
-        $acties = $core->api('/api/acties', [], 60);
         $eigenId = Rollen::eigenEmployeeId();
 
         $planning = $core->api('/api/planning/orders', ['tm' => now()->addDays(7)->toDateString()], 120);
@@ -29,7 +28,6 @@ class DashboardController extends Controller
         return view('dashboard.index', [
             'rol' => $rol,
             'uploads' => $uploads,
-            'acties' => $acties,
             'vandaag' => $vandaag,
             'week' => $week,
             'opTeSchonen' => $opTeSchonen,

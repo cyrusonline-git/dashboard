@@ -11,20 +11,6 @@
     <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Geen verbinding met Boels CORE of nog geen SAP-uploads. De overzichten blijven leeg tot de eerste upload.</div>
 @endif
 
-{{-- Mijn acties --}}
-@if($acties && ($acties['totaal'] ?? 0) > 0)
-<div class="card mb-4" style="border-left: 4px solid var(--boels-orange);">
-    <div class="card-body py-3">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <strong class="me-2"><i class="bi bi-bell me-1 text-boels"></i>Voor jou: {{ $acties['totaal'] }} open</strong>
-            @foreach($acties['items'] as $a)
-                <a href="{{ $a['url'] ?? '#' }}" class="btn btn-sm btn-outline-boels">{{ $a['label'] }} <span class="badge bg-boels ms-1">{{ $a['aantal'] }}</span></a>
-            @endforeach
-        </div>
-    </div>
-</div>
-@endif
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-xl-3">
         <a href="{{ route('planning', ['tm' => now()->toDateString()]) }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon"><i class="bi bi-truck"></i></div><div><div class="kpi-value">{{ $vandaag->count() }}</div><div class="kpi-label">orders te leveren vandaag</div></div></div></div></a>
