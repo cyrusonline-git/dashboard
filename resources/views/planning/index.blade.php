@@ -29,7 +29,7 @@
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked(request()->boolean('mijn'))> alleen mijn orders</label>
         <button class="btn btn-sm btn-boels">Filter</button>
         <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
-        <span class="ms-auto small text-muted">{{ $rijen->count() }} orders · {{ $rijen->where('pick_status', 'volledig')->count() }} volledig gepickt · {{ $rijen->where('pick_status', 'deels')->count() }} deels@if($transfersPerDag->isNotEmpty()) · {{ $transfersPerDag->flatten(1)->count() }} transfers apart@endif</span>
+        <span class="ms-auto small text-muted">{{ $rijen->count() }} orders · {{ $rijen->where('pick_status', 'volledig')->count() }} volledig gepickt · {{ $rijen->where('pick_status', 'deels')->count() }} deels @if($transfersPerDag->isNotEmpty())· {{ $transfersPerDag->flatten(1)->count() }} transfers apart @endif</span>
     </div>
 </form>
 
