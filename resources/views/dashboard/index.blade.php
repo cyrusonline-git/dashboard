@@ -5,7 +5,6 @@
 <div class="page-header">
     <div><h1>Goedendag, {{ $naam }}</h1><p>{{ rol_naam($rol) }} · {{ ucfirst(now()->translatedFormat('l j F Y')) }}</p></div>
 </div>
-@include('partials.stand', ['uploads' => $uploads])
 
 @if(!$coreBereikbaar)
     <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Geen verbinding met Boels CORE of nog geen SAP-uploads. De overzichten blijven leeg tot de eerste upload.</div>
