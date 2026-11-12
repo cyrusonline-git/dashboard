@@ -18,8 +18,9 @@ class DashboardController extends Controller
         $eigenId = Rollen::eigenEmployeeId();
 
         $planning = $core->api('/api/planning/orders', ['tm' => now()->addDays(7)->toDateString()], 120);
-        $vandaag = collect($planning['data'] ?? [])->where('delivery_date', now()->toDateString());
-        $week = collect($planning['data'] ?? []);
+        $zonderTransfers = collect($planning['data'] ?? [])->reject(fn ($o) => in_array($o['soort'], ['transfer_in', 'transfer_uit'], true) || $o['is_offerte']);
+        $vandaag = $zonderTransfers->where('delivery_date', now()->toDateString());
+        $week = $zonderTransfers;
         $opTeSchonen = $core->api('/api/planning/orders', ['verleden' => 1] + ($rol === 'binnendienst' && $eigenId ? ['employee_id' => $eigenId] : []), 120);
         $ophalen = $core->api('/api/hire/to-collect', ['tm' => now()->addDays(7)->toDateString()], 120);
         $factuurrun = Rollen::magFactuurrun($rol) ? $core->api('/api/hire/invoice-run', $rol === 'binnendienst' && $eigenId ? ['employee_id' => $eigenId] : [], 120) : null;

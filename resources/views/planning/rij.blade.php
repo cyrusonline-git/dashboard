@@ -2,7 +2,7 @@
 <div class="order-rij {{ $klasse }}">
     <div>
         <a href="{{ route('planning.show', $o['order_number']) }}" class="fw-semibold text-reset text-decoration-none">{{ $o['customer_name'] ?? '—' }}</a>
-        <div class="small text-muted">{{ $o['delivery_name'] ?? '' }}{{ !empty($o['city']) ? ' · '.$o['city'] : '' }}</div>
+        <div class="small text-muted">@if(in_array($o['soort'], ['transfer_in','transfer_uit']) && !empty($o['hiring_depot'])){{ $o['soort'] === 'transfer_in' ? 'van' : 'naar' }} {{ $o['hiring_depot'] }}@else{{ $o['delivery_name'] ?? '' }}{{ !empty($o['city']) ? ' · '.$o['city'] : '' }}@endif</div>
     </div>
     <div><span class="soort-badge soort-{{ $o['soort'] }}">{{ ['huur'=>'Huurorder','verkoop'=>'Verkooporder','transfer_in'=>'Transfer in','transfer_uit'=>'Transfer uit','retour'=>'Retour','offerte'=>'Offerte','overig'=>'Order'][$o['soort']] ?? $o['soort'] }}</span>
         @if(!empty($o['note']['vlag']))<i class="bi bi-flag-fill text-danger ms-1" title="{{ $o['note']['opmerking'] ?? 'gemarkeerd' }}"></i>@endif</div>

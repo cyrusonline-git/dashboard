@@ -22,10 +22,14 @@ class PlanningController extends Controller
             'tm' => $request->input('tm'),
         ];
         $res = $core->api('/api/planning/orders', $f, 60);
-        $rijen = collect($res['data'] ?? []);
+        $alle = collect($res['data'] ?? []);
+        $isTransfer = fn ($o) => in_array($o['soort'], ['transfer_in', 'transfer_uit'], true);
+        // Transfers apart van de echte planning (Wim); bij een expliciet transfer-filter staan ze in de hoofdlijst
+        $rijen = in_array($f['soort'], ['transfer_in', 'transfer_uit'], true) ? $alle : $alle->reject($isTransfer);
+        $transfers = in_array($f['soort'], ['transfer_in', 'transfer_uit'], true) ? collect() : $alle->filter($isTransfer);
         if ($request->input('export') === 'csv') {
             return \App\Support\Csv::download($f['verleden'] ? 'op-te-schonen' : 'planning', ['Leverdatum', 'Order', 'Soort', 'Klant', 'Status SAP', 'Gepickt', 'Totaal', 'Pickstand', 'Verkoper', 'Referentie', 'Waarde', 'Regels', 'Aflevering', 'Plaats', 'Opmerking'],
-                $rijen->map(fn ($o) => [$o['delivery_date'], $o['order_number'], $o['soort'], $o['customer_name'], $o['contract_status'], $o['picked'], $o['total'], $o['pick_status'], $o['employee_name'] ?? $o['sales_person'], $o['reference'], $o['goods_value'], $o['regels'], $o['delivery_name'], $o['city'], $o['note']['opmerking'] ?? null]));
+                $rijen->merge($transfers)->sortBy('delivery_date')->map(fn ($o) => [$o['delivery_date'], $o['order_number'], $o['soort'], $o['customer_name'], $o['contract_status'], $o['picked'], $o['total'], $o['pick_status'], $o['employee_name'] ?? $o['sales_person'], $o['reference'], $o['goods_value'], $o['regels'], $o['delivery_name'], $o['city'], $o['note']['opmerking'] ?? null]));
         }
         $perDag = $rijen->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen');
 
@@ -34,6 +38,7 @@ class PlanningController extends Controller
             'res' => $res,
             'rijen' => $rijen,
             'perDag' => $perDag,
+            'transfersPerDag' => $transfers->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen'),
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
         ]);
     }

@@ -29,8 +29,7 @@
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked(request()->boolean('mijn'))> alleen mijn orders</label>
         <button class="btn btn-sm btn-boels">Filter</button>
         <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
-        <span class="ms-auto small text-muted">{{ $res['totaal']['orders'] ?? 0 }} orders ·
-            @foreach(($res['totaal']['per_pick_status'] ?? []) as $k => $n)<span class="me-1">{{ $k }}: {{ $n }}</span>@endforeach</span>
+        <span class="ms-auto small text-muted">{{ $rijen->count() }} orders · {{ $rijen->where('pick_status', 'volledig')->count() }} volledig gepickt · {{ $rijen->where('pick_status', 'deels')->count() }} deels@if($transfersPerDag->isNotEmpty()) · {{ $transfersPerDag->flatten(1)->count() }} transfers apart@endif</span>
     </div>
 </form>
 
@@ -46,4 +45,19 @@
 @empty
     <div class="card"><div class="card-body text-muted">Geen orders gevonden{{ $res === null ? ' (CORE niet bereikbaar of nog geen upload)' : '' }}.</div></div>
 @endforelse
+
+@if($transfersPerDag->isNotEmpty())
+<h2 class="h5 mt-5 mb-1"><i class="bi bi-arrow-left-right me-1 text-boels"></i>Transfers tussen depots <span class="badge bg-secondary">{{ $transfersPerDag->flatten(1)->count() }}</span></h2>
+<p class="small text-muted mb-2">Materieel dat van of naar een ander depot gaat; staat los van de klantplanning hierboven.</p>
+@foreach($transfersPerDag as $dag => $orders)
+    <div class="dag-kop mt-3" style="background:#00897b">
+        <span>{{ $dag === 'geen' ? 'Zonder datum' : \Carbon\Carbon::parse($dag)->translatedFormat('l j F Y') }}
+            @if($dag === now()->toDateString())<span class="badge bg-light text-dark ms-2">vandaag</span>@elseif($dag !== 'geen' && $dag < now()->toDateString())<span class="badge bg-danger ms-2">{{ relatief($dag) }}</span>@endif</span>
+        <span class="small fw-normal">{{ $orders->count() }} transfers</span>
+    </div>
+    @foreach($orders as $o)
+        @include('planning.rij', ['o' => $o])
+    @endforeach
+@endforeach
+@endif
 @endsection
