@@ -9,9 +9,9 @@
 
 <form class="card mb-3" method="get">
     <div class="card-body py-2 d-flex flex-wrap gap-2 align-items-center">
+        <input type="hidden" name="mijn" value="0">
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked($f['mijn']) onchange="this.form.submit()"> alleen mijn contracten</label>
-        <input type="hidden" name="mijn" value="0" disabled>
-        <select name="employee_id" class="form-select form-select-sm" style="max-width:200px" onchange="this.form.mijn.checked=false; this.form.submit()">
+        <select name="employee_id" class="form-select form-select-sm" style="max-width:200px" onchange="this.form.querySelector('input[type=checkbox][name=mijn]').checked=false; this.form.submit()">
             <option value="">Alle aanmakers</option>
             @foreach($aanmakers as $id => $naam)<option value="{{ $id }}" @selected(!$f['mijn'] && (string)$f['employee_id']===(string)$id)>{{ $naam }}</option>@endforeach
         </select>
