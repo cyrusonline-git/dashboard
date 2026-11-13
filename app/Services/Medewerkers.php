@@ -69,10 +69,10 @@ class Medewerkers
         $alle = $this->alle();
         $rol = actieve_rol();
         $gebruiker = core_gebruiker() ?? [];
-        if (! in_array($rol, config('core.team_rollen', []), true)) {
+        if (! Rollen::magTeam()) {
             return collect();
         }
-        if (in_array($rol, ['admin', 'bu_manager'], true) || ! empty($gebruiker['is_super_admin'])) {
+        if (Rollen::heeft(['admin', 'bu_manager']) || ! empty($gebruiker['is_super_admin'])) {
             return $alle;
         }
         $depots = array_map('mb_strtolower', (array) session('toegestane_depots', []));

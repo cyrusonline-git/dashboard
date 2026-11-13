@@ -80,6 +80,10 @@ class CoreAuth
             $session->put('actieve_rol', $rollen[0]);
         }
         if (! $session->has('actieve_rol') && ! $request->routeIs('kies-rol', 'kies-rol.opslaan')) {
+            if ($request->isMethod('get') && ! $request->expectsJson()) {
+                $session->put('na_rol', $request->fullUrl()); // na de rolkeuze terug naar de gevraagde pagina (bv. tegel vanuit CORE)
+            }
+
             return redirect()->route('kies-rol');
         }
 

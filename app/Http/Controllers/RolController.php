@@ -24,8 +24,9 @@ class RolController extends Controller
         $rol = (string) $request->input('rol');
         abort_unless(in_array($rol, (array) session('rollen', []), true), 403);
         session(['actieve_rol' => $rol]);
+        $terug = session()->pull('na_rol');
 
-        return redirect()->route('dashboard');
+        return redirect()->to($terug && str_starts_with($terug, config('core.app_url')) ? $terug : route('dashboard'));
     }
 
     public function geenToegang()
