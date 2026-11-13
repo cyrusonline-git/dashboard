@@ -3,7 +3,7 @@
 @section('inhoud')
 <div class="page-header mb-2">
     <h1>PO-bewaking</h1>
-    <p>Contracten en orders zonder klantreferentie of PO-nummer in Smartview (kolom REF in de 8.7, kolom "Your Reference" in de WOW: leeg of "volgt"). Zonder referentie wordt de factuur niet betaald. Een contract blijft hier staan, ook na levering, tot de referentie in InspHire is ingevuld; dan verdwijnt het vanzelf. Leg per contract vast of de PO al is opgevraagd.</p>
+    <p>Contracten en orders zonder klantreferentie of PO-nummer in Smartview (kolom REF in de 8.7, kolom "Your Reference" in de WOW: leeg of "volgt"). Zonder referentie wordt de factuur niet betaald. Een contract blijft hier staan, ook na levering, tot de referentie in InspHire is ingevuld; dan verdwijnt het vanzelf. Leg per contract vast aan wie je om de PO hebt gevraagd: elke keer dat je opslaat met een naam komt er een regel in het logboek bij, zodat je de klant kunt laten zien wie al wanneer gevraagd is.</p>
 </div>
 @include('partials.stand', ['uploads' => $res['uploads'] ?? [], 'soorten' => ['wow', 'planning']])
 
@@ -40,7 +40,7 @@
 <div class="card">
     <div class="table-responsive">
         <table class="table table-sm align-middle mb-0">
-            <thead><tr><th>Contract</th><th>Klant</th><th>Waar</th><th class="text-end">Dagen</th><th class="text-end">Weekhuur</th><th>Verkoper</th><th>Referentie in Smartview</th><th style="min-width:330px">Opvolging</th><th>Status</th></tr></thead>
+            <thead><tr><th>Contract</th><th>Klant</th><th>Waar</th><th class="text-end">Dagen</th><th class="text-end">Weekhuur</th><th>Verkoper</th><th>Referentie in Smartview</th><th style="min-width:420px">PO opvragen · logboek</th><th>Status</th></tr></thead>
             <tbody>
             @forelse($rijen as $r)
                 @php($kleur = $r['status'] === 'afgehandeld' ? 'table-light text-muted' : ($r['dagen'] > 30 ? 'table-danger' : ($r['dagen'] > 7 ? 'table-warning' : '')))
@@ -54,17 +54,29 @@
                     <td class="small"><span class="{{ empty(trim((string) $r['reference'])) ? 'text-muted fst-italic' : 'fw-semibold' }}" style="{{ empty(trim((string) $r['reference'])) ? '' : 'color:#b26a00' }}">{{ trim((string) $r['reference']) !== '' ? $r['reference'] : 'leeg' }}</span></td>
                     <td>
                         @if(\App\Services\Rollen::magNotitie())
-                        <form method="post" action="{{ route('referenties.notitie', $r['contract_number']) }}" class="ref-form d-flex gap-1">
+                        <form method="post" action="{{ route('referenties.notitie', $r['contract_number']) }}" class="ref-form">
                             @csrf
-                            <textarea name="opmerking" class="form-control form-control-sm" rows="1" placeholder="Bij wie opgevraagd, wat is afgesproken…">{{ $r['opmerking'] }}</textarea>
-                            <select name="status" class="form-select form-select-sm" style="max-width:135px">
-                                @foreach(['open'=>'Open','opgevraagd'=>'Opgevraagd','afgehandeld'=>'Afgehandeld'] as $k=>$l)<option value="{{ $k }}" @selected($r['status']===$k)>{{ $l }}</option>@endforeach
-                            </select>
-                            <button class="btn btn-sm btn-boels" title="Opslaan"><i class="bi bi-check-lg"></i></button>
+                            <div class="d-flex gap-1">
+                                <input type="text" name="gevraagd_aan" class="form-control form-control-sm" style="max-width:170px" placeholder="Gevraagd aan (naam bij klant)" title="Vul de naam in van wie je bij de klant om de PO hebt gevraagd; bij opslaan komt er een regel in het logboek bij">
+                                <input type="text" name="opmerking" class="form-control form-control-sm" placeholder="Opmerking (gebeld, gemaild, afspraak…)">
+                                <select name="status" class="form-select form-select-sm" style="max-width:130px">
+                                    @foreach(['open'=>'Open','opgevraagd'=>'Opgevraagd','afgehandeld'=>'Afgehandeld'] as $k=>$l)<option value="{{ $k }}" @selected($r['status']===$k)>{{ $l }}</option>@endforeach
+                                </select>
+                                <button class="btn btn-sm btn-boels" title="Opslaan (met naam = PO-verzoek vastleggen)"><i class="bi bi-check-lg"></i></button>
+                            </div>
                         </form>
-                        @else
-                            {{ $r['opmerking'] ?: '—' }}
                         @endif
+                        <div class="ref-log small mt-1" data-contract="{{ $r['contract_number'] }}">
+                            @php($vz = $r['verzoeken'] ?? [])
+                            @if($vz)
+                                <div class="fw-semibold" style="color:#b26a00">{{ count($vz) }}× om een PO gevraagd</div>
+                                <ul class="list-unstyled mb-0 text-muted">@foreach($vz as $v)<li><i class="bi bi-telephone me-1"></i>{{ dmy($v['op']) }} aan <strong>{{ $v['aan'] ?: '?' }}</strong>@if($v['door']) door {{ $v['door'] }}@endif @if($v['opmerking'])<span class="fst-italic"> — {{ $v['opmerking'] }}</span>@endif</li>@endforeach</ul>
+                            @elseif(!empty($r['opmerking']))
+                                <div class="text-muted fst-italic">{{ $r['opmerking'] }}</div>
+                            @else
+                                <div class="text-muted">nog niemand gevraagd</div>
+                            @endif
+                        </div>
                     </td>
                     <td><span class="badge {{ ['open'=>'bg-warning text-dark','opgevraagd'=>'bg-primary','afgehandeld'=>'bg-success'][$r['status']] ?? 'bg-secondary' }}">{{ $r['status'] }}</span>
                         @if(!empty($r['opgevraagd_op']))<div class="small text-muted">opgevraagd {{ dmy($r['opgevraagd_op']) }}</div>@endif</td>
@@ -98,6 +110,14 @@ document.querySelectorAll('.ref-form').forEach(f => f.addEventListener('submit',
         if (d.ok) {
             btn.classList.replace('btn-boels', 'btn-success'); setTimeout(() => btn.classList.replace('btn-success', 'btn-boels'), 1500);
             const tr = f.closest('tr'); const st = d.note?.status || f.status.value;
+            f.status.value = st;
+            // Logboek verversen en invoervelden leegmaken
+            const log = tr.querySelector('.ref-log'); const vz = d.verzoeken || [];
+            const dmy = s => s ? s.split('-').reverse().join('-') : '';
+            const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+            if (vz.length) { log.innerHTML = '<div class="fw-semibold" style="color:#b26a00">' + vz.length + '× om een PO gevraagd</div><ul class="list-unstyled mb-0 text-muted">' + vz.map(v => '<li><i class="bi bi-telephone me-1"></i>' + dmy(v.op) + ' aan <strong>' + esc(v.aan || '?') + '</strong>' + (v.door ? ' door ' + esc(v.door) : '') + (v.opmerking ? '<span class="fst-italic"> — ' + esc(v.opmerking) + '</span>' : '') + '</li>').join('') + '</ul>'; }
+            else if (f.opmerking.value.trim()) { log.innerHTML = '<div class="text-muted fst-italic">' + esc(f.opmerking.value.trim()) + '</div>'; }
+            f.gevraagd_aan.value = ''; f.opmerking.value = '';
             const badge = tr.querySelector('td:last-child .badge'); badge.textContent = st; badge.className = 'badge ' + ({open: 'bg-warning text-dark', opgevraagd: 'bg-primary', afgehandeld: 'bg-success'}[st] || 'bg-secondary');
             if (st === 'afgehandeld') { tr.classList.remove('table-danger', 'table-warning'); tr.classList.add('table-light', 'text-muted'); }
         } else { alert('Opslaan mislukt.'); }
