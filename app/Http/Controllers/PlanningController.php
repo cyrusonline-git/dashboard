@@ -21,6 +21,7 @@ class PlanningController extends Controller
             'van' => $request->input('van'),
             'tm' => $request->input('tm'),
             'bijhuur' => $request->boolean('bijhuur') ? 1 : null,
+            'niet_op_scanner' => $request->boolean('niet_op_scanner') ? 1 : null,
         ];
         $res = $core->api('/api/planning/orders', $f, 60);
         $alle = collect($res['data'] ?? []);
@@ -41,6 +42,8 @@ class PlanningController extends Controller
             'perDag' => $perDag,
             'transfersPerDag' => $transfers->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen'),
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
+            // 8.7 PickUpInfo leeg = expeditie ziet de order niet op de scanner (Wim 13-11-2026)
+            'nietOpScanner' => (int) ($res['totaal']['niet_op_scanner'] ?? $rijen->where('niet_op_scanner', true)->count()),
         ]);
     }
 

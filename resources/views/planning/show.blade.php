@@ -6,6 +6,9 @@
     <h1><span class="soort-badge soort-{{ $order['soort'] }} me-2">{{ $order['soort'] }}</span>{{ $order['customer_name'] }} <code class="fs-6">{{ $order['order_number'] }}</code></h1>
     <p>@if(!empty($order['bijhuur']))<span class="badge rounded-pill me-1" style="background:#00897b">Bijhuur op lopend contract · {{ $order['in_huur_regels'] }} regels al in huur</span> @endif Leverdatum {{ dmy($order['delivery_date']) }} ({{ relatief($order['delivery_date']) }})@if(!empty($order['delivery_date_contract']) && $order['delivery_date_contract'] !== $order['delivery_date']) · <span class="text-muted">contract gestart {{ dmy($order['delivery_date_contract']) }}</span>@endif · {{ $order['employee_name'] ?? $order['sales_person'] ?? $order['created_by_code'] ?? '' }} @if($order['te_laat'])· <span class="text-danger fw-semibold">leverdatum voorbij — op te schonen</span>@endif</p>
 </div>
+@if(!empty($order['niet_op_scanner']))
+<div class="alert alert-danger py-2"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Niet op de scanner van de expeditie.</strong> De kolom PickUpInfo van deze order is leeg in Smartview (8.7); de expeditie ziet hem daardoor niet om te picken. Vul de PickUpInfo in InspHire, dan verschijnt hij bij de volgende upload.</div>
+@endif
 <div class="row g-3">
     <div class="col-lg-4">
         <div class="card mb-3"><div class="card-header">Order</div>
@@ -20,7 +23,8 @@
                     <dt class="col-5">Aflevering</dt><dd class="col-7">{{ $order['delivery_name'] ?? '' }}<br>{{ $order['street'] ?? '' }} {{ $order['city'] ?? '' }}</dd>
                     <dt class="col-5">Besteld door</dt><dd class="col-7">{{ $order['ordered_by'] ?? '—' }}</dd>
                     <dt class="col-5">Memo</dt><dd class="col-7">{{ $order['memo'] ?? '—' }}</dd>
-                    <dt class="col-5">Bron</dt><dd class="col-7">{{ ['beide' => '8.7 + 2.6', 'planning' => 'alleen 8.7', 'reserveringen' => 'alleen 2.6'][$order['bron']] ?? $order['bron'] }}</dd>
+                    <dt class="col-5">PickUpInfo</dt><dd class="col-7">{{ $order['pick_up_info'] ?? '' }}@if(!empty($order['niet_op_scanner']))<span class="text-danger">leeg — niet op scanner</span>@elseif(empty($order['pick_up_info']))—@endif</dd>
+                    <dt class="col-5">Bron</dt><dd class="col-7">{{ ['beide' => '8.7 + 3.4', 'planning' => 'alleen 8.7', 'reserveringen' => 'alleen 3.4'][$order['bron']] ?? $order['bron'] }}</dd>
                 </dl>
             </div>
         </div>
@@ -37,7 +41,7 @@
         @endif
     </div>
     <div class="col-lg-8">
-        <div class="card"><div class="card-header">Artikelregels ({{ $regels->count() }}) <small class="text-muted fw-normal">{{ ($order['regels_bron'] ?? null) === 'planning_regels' ? 'uit 8.7 (regels-export)' : 'uit 2.6' }} — na levering staan de artikelen in "In huur"</small></div>
+        <div class="card"><div class="card-header">Artikelregels ({{ $regels->count() }}) <small class="text-muted fw-normal">{{ ($order['regels_bron'] ?? null) === 'planning_regels' ? 'uit 8.7 (regels-export)' : 'uit 3.4' }} — na levering staan de artikelen in "In huur"</small></div>
             <div class="table-responsive"><table class="table table-sm mb-0">
                 <thead><tr><th>Artikelnr</th><th>Omschrijving</th><th class="text-end">Aantal</th>@if(!empty($order['bijhuur']))<th class="text-end">Al in huur</th><th class="text-end">Te leveren</th>@endif<th>Type</th><th>Lever</th><th>Huur t/m</th></tr></thead>
                 <tbody>
