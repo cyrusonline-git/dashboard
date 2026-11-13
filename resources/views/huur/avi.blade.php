@@ -61,8 +61,10 @@
 @endsection
 @push('scripts')
 @if(!empty($s['beschikbaar']))
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ asset('js/chart.umd.min.js') }}?v=4.4.1"></script>
+<script>if (typeof Chart === 'undefined') { document.querySelectorAll('canvas').forEach(c => c.insertAdjacentHTML('afterend', '<div class="text-danger small mt-2">Grafiekbibliotheek niet geladen (js/chart.umd.min.js).</div>')); }</script>
 <script>
+try {
 Chart.defaults.font.family = 'Inter, system-ui, sans-serif'; Chart.defaults.color = '#6b7280';
 const eur = v => '€ ' + Math.round(v).toLocaleString('nl-NL');
 const nlDatum = d => new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
@@ -90,6 +92,11 @@ const namen = Object.keys(trend[trend.length - 1].top_klanten || {}).slice(0, 5)
 new Chart(document.getElementById('klantentrend'), { type: 'line', data: { labels: trend.map(t => nlDatum(t.datum)), datasets: namen.map((n, i) => ({ label: n, data: trend.map(t => (t.top_klanten || {})[n] ?? null), borderColor: kleuren[i], tension: .3, pointRadius: 2 })) },
   options: { plugins: { tooltip: { callbacks: { label: c => c.dataset.label + ': ' + eur(c.raw) } } }, scales: { y: { ticks: { callback: eur }, grid: { color: '#eef0f2' } }, x: { grid: { display: false } } } } });
 @endif
+
+} catch (e) {
+    console.error('Grafiek', e);
+    document.querySelectorAll('canvas').forEach(c => { if (!c.nextElementSibling || !c.nextElementSibling.classList.contains('grafiek-fout')) c.insertAdjacentHTML('afterend', '<div class="grafiek-fout text-danger small mt-2">Grafiek kon niet laden: ' + (e && e.message ? e.message : e) + '</div>'); });
+}
 </script>
 @endif
 @endpush

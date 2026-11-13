@@ -25,11 +25,18 @@
 @endsection
 @push('scripts')
 @if($team->where('totaal', '>', 0)->isNotEmpty())
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ asset('js/chart.umd.min.js') }}?v=4.4.1"></script>
+<script>if (typeof Chart === 'undefined') { document.querySelectorAll('canvas').forEach(c => c.insertAdjacentHTML('afterend', '<div class="text-danger small mt-2">Grafiekbibliotheek niet geladen (js/chart.umd.min.js).</div>')); }</script>
 <script>
+try {
 const team = @json($chart);
 const labels = @json($labels); const kleuren = ['#FF6600','#1976d2','#2e7d32','#6f42c1','#c62828','#00897b','#ef6c00','#5d4037','#455a64','#8e24aa'];
 new Chart(document.getElementById('acties'), { type: 'bar', data: { labels: team.map(t => t.naam), datasets: labels.map((l, i) => ({ label: l, data: team.map(t => t.acties[l] || 0), backgroundColor: kleuren[i % kleuren.length] })) }, options: { responsive: true, scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+
+} catch (e) {
+    console.error('Grafiek', e);
+    document.querySelectorAll('canvas').forEach(c => { if (!c.nextElementSibling || !c.nextElementSibling.classList.contains('grafiek-fout')) c.insertAdjacentHTML('afterend', '<div class="grafiek-fout text-danger small mt-2">Grafiek kon niet laden: ' + (e && e.message ? e.message : e) + '</div>'); });
+}
 </script>
 @endif
 @endpush
