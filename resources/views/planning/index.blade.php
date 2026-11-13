@@ -4,7 +4,7 @@
 <div class="page-header mb-2 d-flex justify-content-between align-items-end flex-wrap gap-2">
     <div>
         <h1>{{ $f['verleden'] ? 'Op te schonen' : 'Planning' }}</h1>
-        <p>{{ $f['verleden'] ? 'Orders met een leverdatum vóór vandaag die nog in Smartview open staan — afsluiten of herplannen.' : 'Te leveren huur- en verkooporders, transfers en offertes; pickstand komt uit Smartview (8.7), regels en waarde uit 3.4.' }}</p>
+        <p>{{ $f['verleden'] ? 'Orders met een leverdatum vóór vandaag die nog in Smartview open staan — afsluiten of herplannen.' : 'Te leveren huur- en verkooporders, transfers en offertes; pickstand komt uit Smartview (8.7), regels en waarde uit 3.4. Uitgeleverde orders (artikelen in de WOW) verdwijnen uit de planning.' }}</p>
     </div>
     <div class="btn-group">
         <a href="{{ route('planning', array_filter(['q' => $f['q'], 'mijn' => request('mijn')])) }}" class="btn btn-sm {{ !$f['verleden'] && !$f['alles'] ? 'btn-boels' : 'btn-outline-boels' }}">Vandaag en later</a>
@@ -53,6 +53,12 @@
     </div>
 </form>
 
+@if(isset($geleverd) && $geleverd->isNotEmpty())
+<details class="card mb-2 border-success-subtle">
+    <summary class="card-body py-2 small d-flex justify-content-between align-items-center" style="cursor:pointer;list-style:none"><span><i class="bi bi-check2-circle text-success me-1"></i><strong>Vandaag al uitgeleverd: {{ $geleverd->count() }} {{ $geleverd->count() === 1 ? 'order' : 'orders' }}</strong> <span class="text-muted">— artikelen staan in de WOW; staan niet meer in de planning (klik om te tonen)</span></span><span class="text-muted">{{ euro(collect($geleverd)->sum('goods_value')) }} goederenwaarde</span></summary>
+    <div class="px-2 pb-2">@foreach($geleverd as $o)@include('planning.rij', ['o' => $o])@endforeach</div>
+</details>
+@endif
 @forelse($perDag as $dag => $orders)
     <div class="dag-kop mt-3">
         <span>{{ $dag === 'geen' ? 'Zonder leverdatum' : \Carbon\Carbon::parse($dag)->translatedFormat('l j F Y') }}

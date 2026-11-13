@@ -35,6 +35,12 @@ class PlanningController extends Controller
                 $rijen->merge($transfers)->sortBy('delivery_date')->map(fn ($o) => [$o['delivery_date'], $o['order_number'], $o['soort'], $o['customer_name'], $o['contract_status'], $o['picked'], $o['total'], $o['pick_status'], $o['employee_name'] ?? $o['sales_person'], $o['reference'], $o['goods_value'], $o['regels'], $o['delivery_name'], $o['city'], $o['note']['opmerking'] ?? null]));
         }
         $perDag = $rijen->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen');
+        // Vandaag al uitgeleverd (artikelen in de WOW): apart, ingeklapt, zodat de planning alleen toont wat nog moet
+        $geleverd = collect();
+        if (! $f['verleden'] && ! $f['alles']) {
+            $g = $core->api('/api/planning/orders', ['geleverd' => 1, 'van' => now()->toDateString(), 'tm' => now()->toDateString(), 'q' => $f['q'], 'employee_id' => $f['employee_id']], 60);
+            $geleverd = collect($g['data'] ?? [])->reject($isTransfer);
+        }
 
         return view('planning.index', [
             'f' => $f,
@@ -44,6 +50,7 @@ class PlanningController extends Controller
             'transfersPerDag' => $transfers->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen'),
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
             // 8.7 PickUpInfo leeg = 'profiel niet ingevuld': expeditie ziet de order niet in InspHire Mobile (Wim 13-11-2026)
+            'geleverd' => $geleverd,
             'nietOpScanner' => (int) ($res['totaal']['niet_op_scanner'] ?? $rijen->where('niet_op_scanner', true)->count()),
             // 8.7 REF leeg of 'volgt' = klantreferentie/PO ontbreekt → factuur wordt niet betaald
             'refOntbreekt' => (int) ($res['totaal']['referentie_ontbreekt'] ?? $rijen->where('referentie_ontbreekt', true)->count()),

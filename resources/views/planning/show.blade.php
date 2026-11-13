@@ -17,7 +17,7 @@
         <div class="card mb-3"><div class="card-header">Order</div>
             <div class="card-body small">
                 <dl class="row mb-0">
-                    <dt class="col-5">Pickstand</dt><dd class="col-7">@if($order['pick_status'] === 'onbekend')nog niet in 8.7 @else<span class="pick {{ $order['pick_status'] }}">{{ $order['picked'] }}/{{ $order['total'] }}</span>@endif</dd>
+                    <dt class="col-5">Pickstand</dt><dd class="col-7">@if($order['pick_status'] === 'geleverd')<span class="pick geleverd">geleverd</span> <span class="text-muted">artikelen staan in de WOW</span> @elseif($order['pick_status'] === 'onbekend')nog niet in 8.7 @else<span class="pick {{ $order['pick_status'] }}">{{ $order['picked'] }}/{{ $order['total'] }}</span>@endif</dd>
                     <dt class="col-5">Status Smartview</dt><dd class="col-7">{{ $order['contract_status'] ?? '—' }} @if($order['offerte_status'])· offerte: {{ $order['offerte_status'] }}@endif</dd>
                     <dt class="col-5">Type</dt><dd class="col-7">{{ $order['type_raw'] ?? '—' }}</dd>
                     <dt class="col-5">Referentie</dt><dd class="col-7">{{ $order['reference'] ?? '—' }}@if(!empty($order['referentie_ontbreekt'])) <span class="badge bg-warning text-dark">ontbreekt</span>@endif</dd>
