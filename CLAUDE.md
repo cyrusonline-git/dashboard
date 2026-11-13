@@ -29,6 +29,8 @@ CORE lokaal op 127.0.0.1:8090 (SQLite, SANCTUM_STATEFUL_DOMAINS incl. 127.0.0.1:
 (curl-cookiejar) en open daarna de dashboard-pagina's met dezelfde jar — de CORE-cookie wordt gerelayed.
 Rollen-rechten: `app/Services/Rollen.php`. POSTs naar CORE halen eerst `/sanctum/csrf-cookie` op.
 
+## Layout (13-11-2026): GEEN zijbalk meer — navigatie vanuit de CORE-tegels; smalle kopbalk met logo → CORE-launcher, kruimelpad, rol + accountmenu (`layouts/app.blade.php`).
+
 ## Planbord (fase 3, 12-11-2026)
 Alleen-lezen tijdbord (vandaag · morgen · rest van de week · later + op te halen; transfers in eigen blok; geen oude orders, geen kaartjes) voor iedereen;
 GEEN toewijzen aan expeditiemedewerkers (dat gebeurt in InspHire, komt met de upload mee — Wim).

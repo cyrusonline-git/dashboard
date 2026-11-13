@@ -18,29 +18,17 @@
         body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--ink); font-size: .9rem; }
         a { color: var(--boels-orange-dark); } a:hover { color: var(--boels-orange); }
         code { color: var(--ink); background: #f1f3f5; padding: 1px 6px; border-radius: 6px; font-size: .85em; }
-        /* --- layout: zijbalk + werkruimte --- */
-        .shell { display: flex; min-height: 100vh; }
-        .side { width: 236px; flex: 0 0 236px; background: var(--side); color: #cfd3d7; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-        .side .brand { display: flex; align-items: center; gap: 10px; padding: 18px 18px 14px; color: #fff; text-decoration: none; }
-        .side .brand img { height: 38px; width: auto; background: #fff; border-radius: 8px; padding: 4px 6px; }
-        .side .brand span { font-weight: 700; letter-spacing: .2px; font-size: .95rem; }
-        .side .sectie { font-size: .68rem; text-transform: uppercase; letter-spacing: .8px; color: #868c93; padding: 14px 18px 6px; }
-        .side a.item { display: flex; align-items: center; gap: 10px; padding: 9px 18px; color: #d7dbdf; text-decoration: none; font-weight: 500; border-left: 3px solid transparent; font-size: .88rem; }
-        .side a.item i { width: 18px; text-align: center; color: #9aa0a6; }
-        .side a.item:hover { background: var(--side-2); color: #fff; }
-        .side a.item.active { background: var(--side-2); color: #fff; border-left-color: var(--boels-orange); } .side a.item.active i { color: var(--boels-orange); }
-        .side .onder { margin-top: auto; padding: 14px 18px 18px; border-top: 1px solid #343a40; font-size: .8rem; }
-        .side .onder .naam { color: #fff; font-weight: 600; }
-        .side .onder a { color: #aeb4ba; text-decoration: none; } .side .onder a:hover { color: #fff; }
-        .rol-badge { display: inline-block; background: rgba(255,102,0,.18); color: #ffb380; border-radius: 10px; padding: 1px 8px; font-size: .72rem; font-weight: 600; }
-        .main { flex: 1; min-width: 0; padding: 26px 30px 48px; }
-        .topbar { display: none; }
-        @media (max-width: 991px) {
-            .side { display: none; } .main { padding: 16px; }
-            .topbar { display: flex; align-items: center; justify-content: space-between; background: var(--side); color: #fff; padding: 10px 14px; position: sticky; top: 0; z-index: 10; }
-            .topbar img { height: 32px; background: #fff; border-radius: 6px; padding: 3px 5px; }
-        }
-        .offcanvas.side-mobile { background: var(--side); color: #d7dbdf; width: 260px; }
+        /* --- layout: smalle kopbalk, werkruimte eronder (navigatie gebeurt vanuit CORE) --- */
+        .kop { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 22px; background: #fff; border-bottom: 1px solid var(--line); }
+        .kop-logo img { height: 34px; width: auto; display: block; }
+        .kop-pad { display: flex; align-items: center; gap: 8px; font-size: .86rem; min-width: 0; }
+        .kop-pad a { color: #4b5563; text-decoration: none; } .kop-pad a:hover { color: var(--boels-orange); }
+        .kop-pad .sep { color: #b0b6bc; } .kop-pad .huidig { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .kop-rechts { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: .84rem; }
+        .kop-naam { color: #4b5563; text-decoration: none; }
+        .rol-badge { display: inline-block; background: rgba(255,102,0,.12); color: var(--boels-orange-dark); border-radius: 10px; padding: 2px 9px; font-size: .74rem; font-weight: 600; }
+        .main { max-width: 1480px; margin: 0 auto; padding: 24px 28px 48px; }
+        @media (max-width: 767px) { .kop { padding: 0 12px; gap: 10px; } .main { padding: 14px 12px 36px; } }
         /* --- koppen & kaarten --- */
         .page-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
         .page-header h1 { font-size: 1.45rem; font-weight: 800; letter-spacing: -.2px; margin: 0; }
@@ -101,45 +89,45 @@
 @php($gebruiker = core_gebruiker())
 @php($titel = setting('app_titel', 'Dashboard'))
 
-<div class="shell">
-    @if($rol)
-    <aside class="side">
-        <a class="brand" href="{{ route('dashboard') }}"><img src="{{ asset('images/boels-industrial.png') }}" alt="Boels Industrial"><span>{{ $titel }}</span></a>
-        <nav>@include('partials.menu')</nav>
-        <div class="onder">
-            @if($gebruiker)
-                <div class="naam">{{ $gebruiker['name'] ?? 'Gebruiker' }}</div>
-                <div class="mb-2"><span class="rol-badge">{{ rol_naam($rol) }}</span>@if(eigen_personeelsnummer()) <span class="text-secondary ms-1">#{{ eigen_personeelsnummer() }}</span>@endif</div>
-                <div class="d-flex flex-wrap gap-3">
-                    @if(count($rollen) > 1)<a href="{{ route('kies-rol', ['wissel' => 1]) }}"><i class="bi bi-arrow-left-right me-1"></i>Wissel rol</a>@endif
-                    <a href="{{ config('core.url') }}"><i class="bi bi-grid-3x3-gap me-1"></i>CORE</a>
-                    <a href="{{ route('uitloggen') }}"><i class="bi bi-box-arrow-right me-1"></i>Uitloggen</a>
-                </div>
-            @endif
-        </div>
-    </aside>
-    @endif
-    <div class="flex-grow-1 min-w-0">
-        <div class="topbar">
-            <a class="d-flex align-items-center gap-2 text-white text-decoration-none" href="{{ route('dashboard') }}"><img src="{{ asset('images/boels-industrial.png') }}" alt="Boels Industrial"><strong>{{ $titel }}</strong></a>
-            @if($rol)<button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#menuMobiel"><i class="bi bi-list"></i></button>@endif
-        </div>
-        <main class="main">
-            @if(session('ok'))<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>{{ session('ok') }}</div>@endif
-            @if(session('fout'))<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ session('fout') }}</div>@endif
-            @yield('inhoud')
-            <footer>Boels Industrial · {{ $titel }} · ingelogd via Boels CORE</footer>
-        </main>
+<header class="kop">
+    <a class="kop-logo" href="{{ config('core.url') }}/launcher" title="Terug naar Boels CORE"><img src="{{ asset('images/boels-industrial.png') }}" alt="Boels Industrial"></a>
+    <nav class="kop-pad" aria-label="breadcrumb">
+        <a href="{{ config('core.url') }}/launcher">Boels CORE</a>
+        <span class="sep">›</span>
+        <a href="{{ route('dashboard') }}">{{ $titel }}</a>
+        @hasSection('titel')
+            @if(trim($__env->yieldContent('titel')) !== 'Start')<span class="sep">›</span><span class="huidig">@yield('titel')</span>@endif
+        @endif
+    </nav>
+    <div class="kop-rechts">
+        @if($gebruiker && $rol)
+            <span class="kop-naam d-none d-md-inline">{{ $gebruiker['name'] ?? '' }}</span>
+            <span class="rol-badge">{{ rol_naam($rol) }}</span>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-link text-reset p-0 ms-1" data-bs-toggle="dropdown" aria-label="Account"><i class="bi bi-three-dots-vertical"></i></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><h6 class="dropdown-header">{{ $gebruiker['email'] ?? '' }}@if(eigen_personeelsnummer()) · #{{ eigen_personeelsnummer() }}@endif</h6></li>
+                    @if(count($rollen) > 1)<li><a class="dropdown-item" href="{{ route('kies-rol', ['wissel' => 1]) }}"><i class="bi bi-arrow-left-right me-2"></i>Wissel rol</a></li>@endif
+                    @if($rol === 'admin')
+                        <li><a class="dropdown-item" href="{{ route('beheer') }}"><i class="bi bi-gear me-2"></i>Beheer</a></li>
+                        <li><a class="dropdown-item" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2"></i>Uploads SAP (CORE)</a></li>
+                    @endif
+                    <li><a class="dropdown-item" href="{{ config('core.url') }}/launcher"><i class="bi bi-grid-3x3-gap me-2"></i>Naar Boels CORE</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ route('uitloggen') }}"><i class="bi bi-box-arrow-right me-2"></i>Uitloggen</a></li>
+                </ul>
+            </div>
+        @else
+            <a class="kop-naam" href="{{ config('core.url') }}/launcher">Naar Boels CORE</a>
+        @endif
     </div>
-</div>
-@if($rol)
-<div class="offcanvas offcanvas-start side-mobile" tabindex="-1" id="menuMobiel">
-    <div class="offcanvas-header"><strong class="text-white">{{ $titel }}</strong><button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button></div>
-    <div class="offcanvas-body p-0 side" style="position:static; height:auto; width:auto;">@include('partials.menu')
-        <div class="onder"><a href="{{ route('kies-rol', ['wissel' => 1]) }}">Wissel rol</a> · <a href="{{ route('uitloggen') }}">Uitloggen</a></div>
-    </div>
-</div>
-@endif
+</header>
+<main class="main">
+    @if(session('ok'))<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>{{ session('ok') }}</div>@endif
+    @if(session('fout'))<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ session('fout') }}</div>@endif
+    @yield('inhoud')
+    <footer>Boels Industrial · {{ $titel }} · onderdeel van Boels CORE</footer>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @stack('scripts')
 </body>
