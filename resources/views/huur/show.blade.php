@@ -6,6 +6,18 @@
     <h1>{{ $c['customer_name'] }} <code class="fs-6">{{ $c['contract_number'] }}</code></h1>
     <p>Sinds {{ dmy($c['hire_date']) }} · {{ $c['project_description'] ? 'project '.$c['project_description'].' · ' : '' }}{{ $c['delivery_name'] }} {{ $c['delivery_address'] }} {{ $c['delivery_postal_code'] }} · ref. {{ $c['your_reference'] ?? '—' }}@if($magAvi) · weekhuur <strong>{{ euro($c['weekhuur']) }}</strong>@endif</p>
 </div>
+@if(!empty($c['open_order']))
+@php($oo = $c['open_order'])
+<div class="card mb-3" style="border-left:4px solid #00897b"><div class="card-body py-2 d-flex flex-wrap align-items-center gap-3">
+    <strong><i class="bi bi-plus-circle me-1" style="color:#00897b"></i>Nog te leveren op dit contract (bijhuur)</strong>
+    <span>leverdatum <strong>{{ dmy($oo['delivery_date']) }}</strong> ({{ relatief($oo['delivery_date']) }})</span>
+    <span>pickstand {{ $oo['picked'] + 0 }}/{{ $oo['total'] + 0 }} · <strong>nog {{ $oo['nog_te_picken'] + 0 }} te leveren</strong></span>
+    @if($oo['sales_person'])<span class="text-muted">{{ $oo['sales_person'] }}</span>@endif
+    <a href="{{ route('planning.show', $oo['order_number']) }}" class="ms-auto small">order in planning →</a>
+</div>
+@if(count($oo['regels_26']))<div class="card-body pt-0 small text-muted">Nieuwe regels volgens 2.6: @foreach($oo['regels_26'] as $r){{ $r['qty'] + 0 }}× {{ $r['item_description'] }} ({{ dmy($r['delivery_date']) }}){{ $loop->last ? '' : ' · ' }}@endforeach</div>@endif
+</div>
+@endif
 <div class="card"><div class="card-header">Artikelen ({{ $regels->count() }}) <small class="text-muted fw-normal">stand {{ \Carbon\Carbon::parse($c['upload']['moment'])->format('d-m-Y H:i') }}</small></div>
     <div class="table-responsive"><table class="table table-sm mb-0 align-middle">
         <thead><tr><th>Artikel / machinenr</th><th>Omschrijving</th><th class="text-end">Aantal</th><th>Status</th><th>Sinds</th><th>Retour verwacht</th><th>Ophalen</th>@if($magAvi)<th class="text-end">€/week</th>@endif<th>Notitie</th></tr></thead>

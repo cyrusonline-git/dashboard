@@ -4,6 +4,7 @@
     <div class="kaart-body">
         <a href="{{ route('planning.show', $o['order_number']) }}" class="kaart-titel text-reset text-decoration-none"><code class="text-boels">{{ $o['order_number'] }}</code> {{ $o['customer_name'] }}</a>@if(in_array($o['soort'], ['transfer_in','transfer_uit']) && !empty($o['hiring_depot']))<div class="small text-muted">{{ $o['soort'] === 'transfer_in' ? 'van' : 'naar' }} {{ $o['hiring_depot'] }}</div>@endif
         <div class="small text-muted">{{ $o['delivery_date'] ? \Carbon\Carbon::parse($o['delivery_date'])->translatedFormat('D j M') : 'geen datum' }} · <span class="{{ $o['te_laat'] ? 'text-rood' : '' }}">{{ relatief($o['delivery_date']) }}</span></div>
+        @if(!empty($o['bijhuur']))<div class="small"><span class="badge rounded-pill" style="background:#00897b">Bijhuur · {{ $o['in_huur_regels'] }} al in huur</span>@if(($o['nog_te_picken'] ?? 0) > 0) <span class="text-muted">nog {{ $o['nog_te_picken'] + 0 }} te leveren</span>@endif</div>@endif
         <div class="d-flex justify-content-between align-items-center mt-1">
             @if($o['pick_status'] === 'onbekend')<span class="pick onbekend">{{ $o['regels'] ? $o['regels'].' regels' : 'nog niet in 8.7' }}</span>
             @elseif($o['pick_status'] === 'geen_regels')<span class="pick geen_regels">geen regels</span>

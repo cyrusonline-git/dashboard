@@ -20,6 +20,7 @@ class PlanningController extends Controller
             'employee_id' => $request->boolean('mijn') ? Rollen::eigenEmployeeId() : $request->input('employee_id'),
             'van' => $request->input('van'),
             'tm' => $request->input('tm'),
+            'bijhuur' => $request->boolean('bijhuur') ? 1 : null,
         ];
         $res = $core->api('/api/planning/orders', $f, 60);
         $alle = collect($res['data'] ?? []);
