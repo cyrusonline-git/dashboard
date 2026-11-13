@@ -12,7 +12,7 @@
             <div class="card-body small">
                 <dl class="row mb-0">
                     <dt class="col-5">Pickstand</dt><dd class="col-7">@if($order['pick_status'] === 'onbekend')nog niet in 8.7 @else<span class="pick {{ $order['pick_status'] }}">{{ $order['picked'] }}/{{ $order['total'] }}</span>@endif</dd>
-                    <dt class="col-5">Status SAP</dt><dd class="col-7">{{ $order['contract_status'] ?? '—' }} @if($order['offerte_status'])· offerte: {{ $order['offerte_status'] }}@endif</dd>
+                    <dt class="col-5">Status Smartview</dt><dd class="col-7">{{ $order['contract_status'] ?? '—' }} @if($order['offerte_status'])· offerte: {{ $order['offerte_status'] }}@endif</dd>
                     <dt class="col-5">Type</dt><dd class="col-7">{{ $order['type_raw'] ?? '—' }}</dd>
                     <dt class="col-5">Referentie</dt><dd class="col-7">{{ $order['reference'] ?? '—' }}</dd>
                     <dt class="col-5">Waarde</dt><dd class="col-7">{{ $order['goods_value'] !== null ? euro($order['goods_value']) : '—' }}</dd>

@@ -4,7 +4,7 @@
 <div class="page-header mb-2 d-flex justify-content-between align-items-end flex-wrap gap-2">
     <div>
         <h1>{{ $f['verleden'] ? 'Op te schonen' : 'Planning' }}</h1>
-        <p>{{ $f['verleden'] ? 'Orders met een leverdatum vóór vandaag die nog in SAP open staan — afsluiten of herplannen.' : 'Te leveren huur- en verkooporders, transfers en offertes; pickstand komt uit SAP (8.7), regels en waarde uit 2.6.' }}</p>
+        <p>{{ $f['verleden'] ? 'Orders met een leverdatum vóór vandaag die nog in Smartview open staan — afsluiten of herplannen.' : 'Te leveren huur- en verkooporders, transfers en offertes; pickstand komt uit Smartview (8.7), regels en waarde uit 2.6.' }}</p>
     </div>
     <div class="btn-group">
         <a href="{{ route('planning', array_filter(['q' => $f['q'], 'mijn' => request('mijn')])) }}" class="btn btn-sm {{ !$f['verleden'] && !$f['alles'] ? 'btn-boels' : 'btn-outline-boels' }}">Vandaag en later</a>

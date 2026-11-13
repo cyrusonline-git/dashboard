@@ -6,7 +6,7 @@ use App\Models\AuditLog;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
-/** Beheer (rol admin): naam in de kop en logboek. Uploads en SAP-codes gebeuren in CORE. */
+/** Beheer (rol admin): naam in de kop en logboek. Uploads en Smartview-codes gebeuren in CORE. */
 class BeheerController extends Controller
 {
     public function index()

@@ -6,7 +6,7 @@ use App\Services\CoreSso;
 use App\Services\Medewerkers;
 use App\Services\Rollen;
 
-/** Acties per persoon (managers/beheer): open werk uit alle apps + SAP-signalen per teamlid. */
+/** Acties per persoon (managers/beheer): open werk uit alle apps + Smartview-signalen per teamlid. */
 class TeamController extends Controller
 {
     public function index(CoreSso $core, Medewerkers $medewerkers)

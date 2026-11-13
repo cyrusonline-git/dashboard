@@ -28,7 +28,7 @@ class PlanningController extends Controller
         $rijen = in_array($f['soort'], ['transfer_in', 'transfer_uit'], true) ? $alle : $alle->reject($isTransfer);
         $transfers = in_array($f['soort'], ['transfer_in', 'transfer_uit'], true) ? collect() : $alle->filter($isTransfer);
         if ($request->input('export') === 'csv') {
-            return \App\Support\Csv::download($f['verleden'] ? 'op-te-schonen' : 'planning', ['Leverdatum', 'Order', 'Soort', 'Klant', 'Status SAP', 'Gepickt', 'Totaal', 'Pickstand', 'Verkoper', 'Referentie', 'Waarde', 'Regels', 'Aflevering', 'Plaats', 'Opmerking'],
+            return \App\Support\Csv::download($f['verleden'] ? 'op-te-schonen' : 'planning', ['Leverdatum', 'Order', 'Soort', 'Klant', 'Status Smartview', 'Gepickt', 'Totaal', 'Pickstand', 'Verkoper', 'Referentie', 'Waarde', 'Regels', 'Aflevering', 'Plaats', 'Opmerking'],
                 $rijen->merge($transfers)->sortBy('delivery_date')->map(fn ($o) => [$o['delivery_date'], $o['order_number'], $o['soort'], $o['customer_name'], $o['contract_status'], $o['picked'], $o['total'], $o['pick_status'], $o['employee_name'] ?? $o['sales_person'], $o['reference'], $o['goods_value'], $o['regels'], $o['delivery_name'], $o['city'], $o['note']['opmerking'] ?? null]));
         }
         $perDag = $rijen->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen');

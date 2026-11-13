@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 /**
  * Planbord: de echte planning als kaarten in tijdkolommen (vandaag · morgen · rest van de week ·
  * later) + retouren/op te halen; transfers in een eigen blok eronder. Geen oude orders (die staan
- * onder Planning → Op te schonen). Alleen-lezen: toewijzen en picken gebeurt in InspHire/SAP.
+ * onder Planning → Op te schonen). Alleen-lezen: toewijzen en picken gebeurt in InspHire/Smartview.
  */
 class PlanbordController extends Controller
 {

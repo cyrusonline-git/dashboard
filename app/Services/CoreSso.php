@@ -60,7 +60,18 @@ class CoreSso
         }
         $url = $endpoint.($query ? (str_contains($endpoint, '?') ? '&' : '?').http_build_query(array_filter($query, fn ($v) => $v !== null && $v !== '')) : '');
         $gid = (int) (core_gebruiker()['id'] ?? 0);
-        $sleutel = 'core_api:'.$gid.':'.(int) Cache::get('core_api_gen:'.$gid, 0).':'.md5($url);
+        // Stand van de uploads in de sleutel: een nieuwe upload in CORE ververst alles binnen 30 s
+        $stand = str_starts_with($endpoint, '/api/sap/uploads') ? '-' : Cache::remember('core_stand:'.$gid, 30, function () use ($cookie) {
+            foreach ([config('core.app_url'), config('core.url')] as $referer) {
+                $u = $this->callRaw('/api/sap/uploads', $cookie, $referer);
+                if ($u !== null) {
+                    return md5(json_encode(array_map(fn ($x) => $x['id'] ?? null, $u)));
+                }
+            }
+
+            return 'x';
+        });
+        $sleutel = 'core_api:'.$gid.':'.$stand.':'.(int) Cache::get('core_api_gen:'.$gid, 0).':'.md5($url);
         $haal = function () use ($url, $cookie) {
             foreach ([config('core.app_url'), config('core.url')] as $referer) {
                 $data = $this->callRaw($url, $cookie, $referer);

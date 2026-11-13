@@ -2,8 +2,8 @@
 
 Child-app van Boels CORE (Laravel 12, SQLite). Werkdashboard Boels Industrial: Planning (8.7 + 2.6),
 Op te schonen, Uit factuurrun (met redenveld), In huur / Ophaallijst / AVI (WOW), Team (acties per
-persoon). **Alle SAP-data staat in CORE** (Beheer → Uploads SAP); deze app leest via de CORE-API met
-de cookie-relay (`CoreSso::api()` / `apiPost()`), slaat zelf geen SAP-data op. Ontwerp + bestandsregels:
+persoon). **Alle Smartview-data staat in CORE** (Beheer → Uploads Smartview); deze app leest via de CORE-API met
+de cookie-relay (`CoreSso::api()` / `apiPost()`), slaat zelf geen Smartview-data op. Ontwerp + bestandsregels:
 `hub_database_Boels/docs/sap-uploads.md` en het plan van 12-11-2026.
 
 ## Regels
@@ -34,6 +34,6 @@ Rollen-rechten: `app/Services/Rollen.php`. POSTs naar CORE halen eerst `/sanctum
 ## Planbord (fase 3, 12-11-2026)
 Alleen-lezen tijdbord (vandaag · morgen · rest van de week · later + op te halen; transfers in eigen blok; geen oude orders, geen kaartjes) voor iedereen;
 GEEN toewijzen aan expeditiemedewerkers (dat gebeurt in InspHire, komt met de upload mee — Wim).
-Geen eigen SAP-data (tabel `taken` bestaat nog maar is ongebruikt). CSV-export op planning, factuurrun, in huur, ophaallijst, AVI
+Geen eigen Smartview-data (tabel `taken` bestaat nog maar is ongebruikt). CSV-export op planning, factuurrun, in huur, ophaallijst, AVI
 via `?export=csv` (`app/Support/Csv.php`). Beheer (admin): naam in de kop + logboek; uploads in CORE.
 Wim wil de indeling later herzien (overlap met CORE-startscherm).

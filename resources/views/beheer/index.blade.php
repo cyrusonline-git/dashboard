@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('titel', 'Beheer')
 @section('inhoud')
-<div class="page-header mb-3"><h1>Beheer</h1><p>Uploads van de SAP-bestanden en de koppeling van SAP-codes aan medewerkers gebeuren in CORE (menu Beheer → Uploads SAP).</p></div>
+<div class="page-header mb-3"><h1>Beheer</h1><p>Uploads van de Smartview-bestanden en de koppeling van Smartview-codes aan medewerkers gebeuren in CORE (menu Beheer → Uploads Smartview).</p></div>
 <div class="row g-3">
     <div class="col-lg-5">
         <form method="post" class="card"><div class="card-header">Instellingen</div>
@@ -11,8 +11,8 @@
             </div>
         </form>
         <div class="card mt-3"><div class="card-header">Koppelingen</div><div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2 text-boels"></i>Uploads SAP in CORE</a>
-            <a class="list-group-item list-group-item-action" href="{{ config('core.url') }}/admin/sap-uploads/codes" target="_blank"><i class="bi bi-person-badge me-2 text-boels"></i>SAP-codes → medewerkers in CORE</a>
+            <a class="list-group-item list-group-item-action" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2 text-boels"></i>Uploads Smartview in CORE</a>
+            <a class="list-group-item list-group-item-action" href="{{ config('core.url') }}/admin/sap-uploads/codes" target="_blank"><i class="bi bi-person-badge me-2 text-boels"></i>Smartview-codes → medewerkers in CORE</a>
             <a class="list-group-item list-group-item-action" href="{{ config('core.url') }}/admin/applications" target="_blank"><i class="bi bi-grid me-2 text-boels"></i>Applicatie & rollen in CORE</a>
         </div></div>
     </div>

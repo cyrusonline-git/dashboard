@@ -110,7 +110,7 @@
                     @if(count($rollen) > 1)<li><a class="dropdown-item" href="{{ route('kies-rol', ['wissel' => 1]) }}"><i class="bi bi-arrow-left-right me-2"></i>Wissel rol</a></li>@endif
                     @if($rol === 'admin')
                         <li><a class="dropdown-item" href="{{ route('beheer') }}"><i class="bi bi-gear me-2"></i>Beheer</a></li>
-                        <li><a class="dropdown-item" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2"></i>Uploads SAP (CORE)</a></li>
+                        <li><a class="dropdown-item" href="{{ config('core.url') }}/admin/sap-uploads" target="_blank"><i class="bi bi-cloud-upload me-2"></i>Uploads Smartview (CORE)</a></li>
                     @endif
                     <li><a class="dropdown-item" href="{{ config('core.url') }}/launcher"><i class="bi bi-grid-3x3-gap me-2"></i>Naar Boels CORE</a></li>
                     <li><hr class="dropdown-divider"></li>

@@ -7,7 +7,7 @@
 </div>
 
 @if(!$coreBereikbaar)
-    <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Geen verbinding met Boels CORE of nog geen SAP-uploads. De overzichten blijven leeg tot de eerste upload.</div>
+    <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Geen verbinding met Boels CORE of nog geen Smartview-uploads. De overzichten blijven leeg tot de eerste upload.</div>
 @endif
 
 <div class="row g-3 mb-4">

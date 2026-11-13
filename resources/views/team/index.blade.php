@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('titel', 'Acties per persoon')
 @section('inhoud')
-<div class="page-header"><div><h1>Acties per persoon</h1><p>Alleen werk dat echt op naam staat: ruilverzoeken (Spoedverhuur), eigen onderdelenbestellingen (Servicedesk), eigen transportaanvragen (Planner), eigen inhuur die retour maar niet afgemeld is, en de SAP-signalen (factuurrun zonder reden, orders op te schonen, verlopen offertes). Tellers per depot, zoals open schades of tankbeurten, staan op de CORE-tegels en tellen hier niet mee.</p></div></div>
+<div class="page-header"><div><h1>Acties per persoon</h1><p>Alleen werk dat echt op naam staat: ruilverzoeken (Spoedverhuur), eigen onderdelenbestellingen (Servicedesk), eigen transportaanvragen (Planner), eigen inhuur die retour maar niet afgemeld is, en de Smartview-signalen (factuurrun zonder reden, orders op te schonen, verlopen offertes). Tellers per depot, zoals open schades of tankbeurten, staan op de CORE-tegels en tellen hier niet mee.</p></div></div>
 @if(!$bereikbaar)<div class="alert alert-warning">CORE niet bereikbaar of geen rechten voor het teamoverzicht.</div>@endif
 <div class="row g-3 mb-4">
 @foreach($team->where('totaal', '>', 0) as $m)
