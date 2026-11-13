@@ -20,6 +20,28 @@
     <div class="col-6 col-xl-3"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#c62828"><i class="bi bi-arrow-return-left"></i></div><div><div class="kpi-value">{{ euro($afgemeldGeld) }}</div><div class="kpi-label">weekhuur afgemeld, nog op te halen · {{ $s['to_collect_contracten'] }} contracten</div></div></div></div></div>
 </div>
 
+@php($m = $s['maand'] ?? null)
+@if($m)
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2"><span><i class="bi bi-calendar-month text-boels me-1"></i>Omzetprognose {{ $m['maand_label'] }}</span><span class="small text-muted fw-normal">als alles wat nu in huur staat tot {{ dmy(\Carbon\Carbon::parse($m['maand'].'-01')->endOfMonth()) }} blijft staan · netto weekhuur × aantal × dagen in huur deze maand ÷ 7, vanaf de huurstartdatum</span></div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-6 col-xl-3"><div class="card kpi-tile h-100"><div class="kpi-body"><div class="kpi-icon" style="background:#2e7d32"><i class="bi bi-graph-up-arrow"></i></div><div><div class="kpi-value">{{ euro($m['prognose']) }}</div><div class="kpi-label">huuromzet {{ $m['maand_label'] }} · {{ $m['klanten'] }} klanten</div></div></div></div></div>
+            <div class="col-6 col-xl-3"><div class="card kpi-tile h-100"><div class="kpi-body"><div class="kpi-icon" style="background:#1976d2"><i class="bi bi-check2-circle"></i></div><div><div class="kpi-value">{{ euro($m['tot_vandaag']) }}</div><div class="kpi-label">al opgebouwd t/m vandaag · dag {{ $m['dagen_voorbij'] }} van {{ $m['dagen_maand'] }}</div></div></div></div></div>
+            <div class="col-6 col-xl-3"><div class="card kpi-tile h-100"><div class="kpi-body"><div class="kpi-icon" style="background:#FF6600"><i class="bi bi-hourglass-split"></i></div><div><div class="kpi-value">{{ euro($m['nog_te_komen']) }}</div><div class="kpi-label">nog te komen · {{ $m['dagen_rest'] }} dagen tot eind van de maand</div></div></div></div></div>
+            <div class="col-6 col-xl-3"><div class="card kpi-tile h-100"><div class="kpi-body"><div class="kpi-icon" style="background:#6f42c1"><i class="bi bi-arrow-return-left"></i></div><div><div class="kpi-value">{{ euro($m['prognose_realistisch']) }}</div><div class="kpi-label">als afgemelde regels op hun ophaaldatum stoppen ({{ euro($m['prognose'] - $m['prognose_realistisch']) }} minder)</div></div></div></div></div>
+        </div>
+        @if(!empty($m['per_klant']))
+        <details class="mt-3"><summary class="small text-boels" style="cursor:pointer">Top {{ count($m['per_klant']) }} klanten in de prognose van {{ $m['maand_label'] }}</summary>
+            <div class="table-responsive mt-2"><table class="table table-sm mb-0 small"><thead><tr><th>Klant</th><th class="text-end">Contracten</th><th class="text-end">Omzet {{ $m['maand_label'] }}</th><th class="text-end">Aandeel</th></tr></thead><tbody>
+            @foreach($m['per_klant'] as $k)<tr><td>{{ $k['customer_name'] }} <span class="text-muted">{{ $k['customer_number'] }}</span></td><td class="text-end">{{ $k['contracten'] }}</td><td class="text-end">{{ euro($k['omzet']) }}</td><td class="text-end text-muted">{{ $m['prognose'] > 0 ? number_format($k['omzet'] / $m['prognose'] * 100, 1, ',', '.') : 0 }}%</td></tr>@endforeach
+            </tbody></table></div>
+        </details>
+        @endif
+    </div>
+</div>
+@endif
+
 <div class="row g-3 mb-3">
     <div class="col-xl-8">
         <div class="card h-100"><div class="card-header d-flex justify-content-between"><span>AVI in de tijd</span><span class="small text-muted fw-normal">{{ $trend->count() }} meetpunt{{ $trend->count() === 1 ? '' : 'en' }} · één per uploaddag</span></div>
