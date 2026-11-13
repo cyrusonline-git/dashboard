@@ -6,7 +6,9 @@
     </div>
     <div><span class="soort-badge soort-{{ $o['soort'] }}">{{ ['huur'=>'Huurorder','verkoop'=>'Verkooporder','transfer_in'=>'Transfer in','transfer_uit'=>'Transfer uit','retour'=>'Retour','offerte'=>'Offerte','overig'=>'Order'][$o['soort']] ?? $o['soort'] }}</span>
         @if(!empty($o['note']['vlag']))<i class="bi bi-flag-fill text-danger ms-1" title="{{ $o['note']['opmerking'] ?? 'gemarkeerd' }}"></i>@endif
-        @if(!empty($o['bijhuur']))<div class="mt-1"><span class="badge rounded-pill" style="background:#00897b" title="Dit contract staat al in huur; dit is een aanvulling">Bijhuur · {{ $o['in_huur_regels'] }} in huur</span></div>@endif</div>
+        @if(!empty($o['bijhuur']))<div class="mt-1"><span class="badge rounded-pill" style="background:#00897b" title="Dit contract staat al in huur; dit is een aanvulling">Bijhuur · {{ $o['in_huur_regels'] }} in huur</span>
+            @if(!empty($o['nieuwe_regels']))<div class="small mt-1" style="background:#fff8e1;border-radius:6px;padding:2px 6px">@foreach(array_slice($o['nieuwe_regels'], 0, 3) as $l)<strong>{{ $l['qty'] + 0 }}×</strong> {{ $l['item_description'] }}{{ $loop->last ? '' : ' · ' }}@endforeach @if(count($o['nieuwe_regels']) > 3)<span class="text-muted">+{{ count($o['nieuwe_regels']) - 3 }}</span>@endif</div>@endif
+        </div>@endif</div>
     <div>
         @if($o['pick_status'] === 'onbekend')
             <span class="pick onbekend" title="nog niet in 8.7">{{ $o['regels'] ? $o['regels'].' regels' : 'nog niet in planning' }}</span>

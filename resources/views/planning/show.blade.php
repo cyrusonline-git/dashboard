@@ -4,7 +4,7 @@
 <div class="page-header mb-3">
     <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('planning') }}" class="small"><i class="bi bi-arrow-left"></i> terug</a>
     <h1><span class="soort-badge soort-{{ $order['soort'] }} me-2">{{ $order['soort'] }}</span>{{ $order['customer_name'] }} <code class="fs-6">{{ $order['order_number'] }}</code></h1>
-    <p>Leverdatum {{ dmy($order['delivery_date']) }} ({{ relatief($order['delivery_date']) }}) · {{ $order['employee_name'] ?? $order['sales_person'] ?? $order['created_by_code'] ?? '' }} @if($order['te_laat'])· <span class="text-danger fw-semibold">leverdatum voorbij — op te schonen</span>@endif</p>
+    <p>@if(!empty($order['bijhuur']))<span class="badge rounded-pill me-1" style="background:#00897b">Bijhuur op lopend contract · {{ $order['in_huur_regels'] }} regels al in huur</span> @endif Leverdatum {{ dmy($order['delivery_date']) }} ({{ relatief($order['delivery_date']) }})@if(!empty($order['delivery_date_contract']) && $order['delivery_date_contract'] !== $order['delivery_date']) · <span class="text-muted">contract gestart {{ dmy($order['delivery_date_contract']) }}</span>@endif · {{ $order['employee_name'] ?? $order['sales_person'] ?? $order['created_by_code'] ?? '' }} @if($order['te_laat'])· <span class="text-danger fw-semibold">leverdatum voorbij — op te schonen</span>@endif</p>
 </div>
 <div class="row g-3">
     <div class="col-lg-4">
@@ -39,10 +39,11 @@
     <div class="col-lg-8">
         <div class="card"><div class="card-header">Artikelregels ({{ $regels->count() }}) <small class="text-muted fw-normal">{{ ($order['regels_bron'] ?? null) === 'planning_regels' ? 'uit 8.7 (regels-export)' : 'uit 2.6' }} — na levering staan de artikelen in "In huur"</small></div>
             <div class="table-responsive"><table class="table table-sm mb-0">
-                <thead><tr><th>Artikelnr</th><th>Omschrijving</th><th class="text-end">Aantal</th><th>Type</th><th>Lever</th><th>Huur t/m</th></tr></thead>
+                <thead><tr><th>Artikelnr</th><th>Omschrijving</th><th class="text-end">Aantal</th>@if(!empty($order['bijhuur']))<th class="text-end">Al in huur</th><th class="text-end">Te leveren</th>@endif<th>Type</th><th>Lever</th><th>Huur t/m</th></tr></thead>
                 <tbody>
                 @forelse($regels as $r)
-                    <tr><td><code>{{ $r['item_number'] }}</code></td><td>{{ $r['item_description'] }}</td><td class="text-end">{{ $r['qty'] + 0 }}</td><td class="small text-muted">{{ $r['type'] }}</td><td class="small">{{ dmy($r['delivery_date']) }}</td><td class="small">{{ dmy($r['hire_end_date']) }} {{ $r['hire_end_time'] ?? '' }}</td></tr>
+                    @php($nieuw = !empty($order['bijhuur']) && ($r['te_leveren'] ?? 0) > 0)
+                    <tr class="{{ $nieuw ? 'table-warning' : '' }}"><td><code>{{ $r['item_number'] }}</code>@if($nieuw) <span class="badge bg-warning text-dark">nieuw</span>@endif</td><td>{{ $r['item_description'] }}</td><td class="text-end">{{ $r['qty'] + 0 }}</td>@if(!empty($order['bijhuur']))<td class="text-end text-muted">{{ ($r['al_in_huur'] ?? 0) + 0 }}</td><td class="text-end fw-bold">{{ ($r['te_leveren'] ?? 0) + 0 }}</td>@endif<td class="small text-muted">{{ $r['type'] }}</td><td class="small">{{ dmy($r['delivery_date']) }}</td><td class="small">{{ dmy($r['hire_end_date']) }} {{ $r['hire_end_time'] ?? '' }}</td></tr>
                 @empty
                     <tr><td colspan="6" class="text-muted">Geen artikelregels in de exports voor deze order. Upload in CORE naast de platte 8.7-View ook de gegroepeerde 8.7-export met artikelregels (kaart "Planning: artikelregels"), dan verschijnen ze hier.</td></tr>
                 @endforelse
