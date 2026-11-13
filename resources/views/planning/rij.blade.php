@@ -12,7 +12,9 @@
             @if(!empty($o['nieuwe_regels']))<div class="small mt-1" style="background:#fff8e1;border-radius:6px;padding:2px 6px">@foreach(array_slice($o['nieuwe_regels'], 0, 3) as $l)<strong>{{ $l['qty'] + 0 }}×</strong> {{ $l['item_description'] }}{{ $loop->last ? '' : ' · ' }}@endforeach @if(count($o['nieuwe_regels']) > 3)<span class="text-muted">+{{ count($o['nieuwe_regels']) - 3 }}</span>@endif</div>@endif
         </div>@endif</div>
     <div>
-        @if($o['pick_status'] === 'geleverd')
+        @if($o['pick_status'] === 'niet_pickbaar')
+            <span class="pick geen_regels" title="Alleen brandstof, arbeid of heffingen: de expeditie hoeft niets te picken">alleen brandstof/arbeid · niets te picken</span>
+        @elseif($o['pick_status'] === 'geleverd')
             <span class="pick geleverd" title="Artikelen staan in de WOW (On-Hire/Delivered)"><i class="bi bi-check2-circle me-1"></i>geleverd</span>
         @elseif($o['pick_status'] === 'onbekend')
             <span class="pick onbekend" title="nog niet in 8.7">{{ $o['regels'] ? $o['regels'].' regels' : 'nog niet in planning' }}</span>

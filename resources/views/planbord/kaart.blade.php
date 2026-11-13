@@ -10,7 +10,8 @@
             @if(!empty($o['nieuwe_regels']))<ul class="small mb-0 mt-1 ps-3" style="background:#fff8e1;border-radius:6px;padding:4px 4px 4px 18px">@foreach(array_slice($o['nieuwe_regels'], 0, 5) as $l)<li><strong>{{ $l['qty'] + 0 }}×</strong> {{ $l['item_description'] }}</li>@endforeach @if(count($o['nieuwe_regels']) > 5)<li class="text-muted">… en {{ count($o['nieuwe_regels']) - 5 }} meer</li>@endif</ul>@endif
         @endif
         <div class="d-flex justify-content-between align-items-center mt-1">
-            @if($o['pick_status'] === 'geleverd')<span class="pick geleverd">geleverd</span>
+            @if($o['pick_status'] === 'niet_pickbaar')<span class="pick geen_regels">niets te picken</span>
+            @elseif($o['pick_status'] === 'geleverd')<span class="pick geleverd">geleverd</span>
             @elseif($o['pick_status'] === 'onbekend')<span class="pick onbekend">{{ $o['regels'] ? $o['regels'].' regels' : 'nog niet in 8.7' }}</span>
             @elseif($o['pick_status'] === 'geen_regels')<span class="pick geen_regels">geen regels</span>
             @else<span class="pick {{ $o['pick_status'] }}">{{ $o['picked'] + 0 }}/{{ $o['total'] + 0 }} gepickt</span>@endif
