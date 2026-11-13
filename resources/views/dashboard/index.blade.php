@@ -28,6 +28,11 @@
         <a href="{{ route('factuurrun', ['zonder_reden' => 1]) }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#6f42c1"><i class="bi bi-receipt"></i></div><div><div class="kpi-value">{{ $factuurrun['totaal']['zonder_reden'] ?? 0 }}<small class="text-muted fs-6"> / {{ $factuurrun['totaal']['contracten'] ?? 0 }}</small></div><div class="kpi-label">{{ $rol === 'binnendienst' ? 'mijn ' : '' }}contracten uit factuurrun zonder reden</div></div></div></div></a>
     </div>
     @endif
+    @if($referenties !== null)
+    <div class="col-6 col-xl-3">
+        <a href="{{ route('referenties') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#b26a00"><i class="bi bi-receipt-cutoff"></i></div><div><div class="kpi-value">{{ ($referenties['totaal']['open'] ?? 0) + ($referenties['totaal']['opgevraagd'] ?? 0) }}@if(($referenties['totaal']['ouder_dan_30'] ?? 0) > 0)<small class="text-danger ms-1">{{ $referenties['totaal']['ouder_dan_30'] }} &gt; 30 dagen</small>@endif</div><div class="kpi-label">zonder klantreferentie / PO · {{ euro($referenties['totaal']['weekhuur'] ?? 0) }}/wk niet te factureren</div></div></div></div></a>
+    </div>
+    @endif
     @if($summary && !empty($summary['beschikbaar']))
     <div class="col-6 col-xl-3">
         <a href="{{ route('huur.avi') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#2e7d32"><i class="bi bi-cash-coin"></i></div><div><div class="kpi-value">{{ euro($summary['weekhuur']) }}</div><div class="kpi-label">weekhuur in huur (AVI) · {{ $summary['contracten'] }} contracten</div></div></div></div></a>

@@ -26,6 +26,10 @@ Route::middleware('core')->group(function () {
     Route::get('/factuurrun/{nr}', [FactuurrunController::class, 'show'])->whereNumber('nr')->name('factuurrun.show');
     Route::post('/factuurrun/{nr}/reden', [FactuurrunController::class, 'notitie'])->whereNumber('nr')->name('factuurrun.reden');
 
+    // PO-bewaking: zonder klantreferentie/PO-nummer, gevolgd tot de referentie in Smartview staat
+    Route::get('/referenties', [\App\Http\Controllers\ReferentieController::class, 'index'])->name('referenties');
+    Route::post('/referenties/{nr}/notitie', [\App\Http\Controllers\ReferentieController::class, 'notitie'])->whereNumber('nr')->name('referenties.notitie');
+
     // In huur (WOW): contracten, ophaallijst, AVI, machine
     Route::get('/in-huur', [HuurController::class, 'index'])->name('huur');
     Route::get('/in-huur/ophalen', [HuurController::class, 'ophalen'])->name('huur.ophalen');
