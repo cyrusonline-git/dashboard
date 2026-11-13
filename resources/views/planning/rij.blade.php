@@ -22,5 +22,5 @@
     </div>
     <div class="small">{{ $o['employee_name'] ?? $o['sales_person'] ?? $o['created_by_code'] ?? '—' }}</div>
     <div class="small text-truncate {{ !empty($o['referentie_ontbreekt']) ? 'fw-semibold' : 'text-muted' }}" style="{{ !empty($o['referentie_ontbreekt']) ? 'color:#b26a00' : '' }}" title="{{ $o['reference'] }}">{{ !empty($o['referentie_ontbreekt']) ? ($o['reference'] ?: 'geen referentie') : ($o['reference'] ?? '') }}</div>
-    <div class="text-end"><code>{{ $o['order_number'] }}</code>@if($o['te_laat'])<div class="small text-danger">{{ relatief($o['delivery_date']) }}</div>@elseif($o['delivery_date'])<div class="small text-muted">{{ relatief($o['delivery_date']) }}</div>@endif</div>
+    <div class="text-end"><code>{{ $o['order_number'] }}</code>@if($o['te_laat'])<div class="small text-danger">{{ relatief($o['delivery_date']) }}</div>@elseif($o['delivery_date'])<div class="small text-muted">{{ relatief($o['delivery_date']) }}</div>@endif @if(!empty($o['hire_start_date']) && $o['hire_start_date'] !== $o['delivery_date'])<div class="small text-muted" title="Verhuurdatum (start huur) verschilt van de leverdatum">huur vanaf {{ dmy($o['hire_start_date']) }}</div>@endif</div>
 </div>
