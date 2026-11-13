@@ -63,7 +63,7 @@
         .dag-kop .small { color: #c7ccd1; font-weight: 500; }
         .order-rij { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; margin-top: 6px; display: grid; grid-template-columns: 1.7fr 1fr 1.1fr 1fr 1.2fr .9fr; gap: 12px; align-items: center; }
         .order-rij:hover { border-color: #d3d7dc; }
-        .order-rij.volledig { background: #eaf6ec; border-color: #d4ead8; } .order-rij.deels { background: #fff4e5; border-color: #f5e2c4; } .order-rij.te-laat { background: #fdecec; border-color: #f3cfcf; } .order-rij.offerte { background: #efeafa; border-color: #ddd3f0; } .order-rij.niet-op-scanner { background: #fde0e0; border-color: #e53935; border-left: 5px solid #e53935; }
+        .order-rij.volledig { background: #eaf6ec; border-color: #d4ead8; } .order-rij.deels { background: #fff4e5; border-color: #f5e2c4; } .order-rij.te-laat { background: #fdecec; border-color: #f3cfcf; } .order-rij.offerte { background: #efeafa; border-color: #ddd3f0; } .order-rij.niet-op-scanner { background: #fde0e0; border-color: #e53935; border-left: 5px solid #e53935; } .order-rij.geen-ref { background: #fff3cd; border-color: #f0ad4e; border-left: 5px solid #f0ad4e; }
         .pick { display: inline-block; min-width: 96px; text-align: center; border-radius: 999px; padding: 3px 11px; font-size: .76rem; font-weight: 600; }
         .pick.volledig { background: #2e7d32; color: #fff; } .pick.deels { background: #ef6c00; color: #fff; } .pick.niets { background: #e9ecef; color: #555; } .pick.onbekend, .pick.geen_regels { background: #f1f3f5; color: #98a0a8; }
         .soort-badge { font-size: .66rem; font-weight: 700; letter-spacing: .4px; border-radius: 6px; padding: 3px 8px; color: #fff; text-transform: uppercase; white-space: nowrap; }
@@ -77,7 +77,7 @@
         .kaart-kop { color: #fff; font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 5px 10px; display: flex; justify-content: space-between; }
         .kaart-body { padding: 9px 11px; font-size: .84rem; }
         .kaart-titel { font-weight: 600; } .kaart .text-rood { color: #c62828; font-weight: 600; }
-        .kaart.te-laat .kaart-body { background: #fdecec; } .kaart.niet-op-scanner { border: 2px solid #e53935; } .kaart.niet-op-scanner .kaart-body { background: #fde0e0; } .kaart.volledig .kaart-body { background: #eaf6ec; }
+        .kaart.te-laat .kaart-body { background: #fdecec; } .kaart.niet-op-scanner { border: 2px solid #e53935; } .kaart.niet-op-scanner .kaart-body { background: #fde0e0; } .kaart.geen-ref { border: 2px solid #f0ad4e; } .kaart.geen-ref .kaart-body { background: #fff3cd; } .kaart.volledig .kaart-body { background: #eaf6ec; }
         .reden-form textarea { min-height: 38px; }
         footer { color: #9aa0a6; font-size: .76rem; padding: 24px 0 0; }
     </style>

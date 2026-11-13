@@ -22,6 +22,7 @@ class PlanningController extends Controller
             'tm' => $request->input('tm'),
             'bijhuur' => $request->boolean('bijhuur') ? 1 : null,
             'niet_op_scanner' => $request->boolean('niet_op_scanner') ? 1 : null,
+            'referentie_ontbreekt' => $request->boolean('referentie_ontbreekt') ? 1 : null,
         ];
         $res = $core->api('/api/planning/orders', $f, 60);
         $alle = collect($res['data'] ?? []);
@@ -44,6 +45,8 @@ class PlanningController extends Controller
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
             // 8.7 PickUpInfo leeg = 'profiel niet ingevuld': expeditie ziet de order niet in InspHire Mobile (Wim 13-11-2026)
             'nietOpScanner' => (int) ($res['totaal']['niet_op_scanner'] ?? $rijen->where('niet_op_scanner', true)->count()),
+            // 8.7 REF leeg of 'volgt' = klantreferentie/PO ontbreekt → factuur wordt niet betaald
+            'refOntbreekt' => (int) ($res['totaal']['referentie_ontbreekt'] ?? $rijen->where('referentie_ontbreekt', true)->count()),
         ]);
     }
 

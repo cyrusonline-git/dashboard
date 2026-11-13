@@ -6,6 +6,9 @@
     <h1><span class="soort-badge soort-{{ $order['soort'] }} me-2">{{ $order['soort'] }}</span>{{ $order['customer_name'] }} <code class="fs-6">{{ $order['order_number'] }}</code></h1>
     <p>@if(!empty($order['bijhuur']))<span class="badge rounded-pill me-1" style="background:#00897b">Bijhuur op lopend contract · {{ $order['in_huur_regels'] }} regels al in huur</span> @endif Leverdatum {{ dmy($order['delivery_date']) }} ({{ relatief($order['delivery_date']) }})@if(!empty($order['delivery_date_contract']) && $order['delivery_date_contract'] !== $order['delivery_date']) · <span class="text-muted">contract gestart {{ dmy($order['delivery_date_contract']) }}</span>@endif · {{ $order['employee_name'] ?? $order['sales_person'] ?? $order['created_by_code'] ?? '' }} @if($order['te_laat'])· <span class="text-danger fw-semibold">leverdatum voorbij — op te schonen</span>@endif</p>
 </div>
+@if(!empty($order['referentie_ontbreekt']))
+<div class="alert alert-warning py-2"><i class="bi bi-receipt-cutoff me-1"></i><strong>Klantreferentie of PO-nummer ontbreekt.</strong> De kolom REF van deze order is leeg of bevat "volgt" in Smartview (8.7). Vraag de referentie op bij de klant en zet die in InspHire, anders wordt de factuur niet betaald.</div>
+@endif
 @if(!empty($order['niet_op_scanner']))
 <div class="alert alert-danger py-2"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Profiel niet ingevuld.</strong> De kolom PickUpInfo van deze order is leeg in Smartview (8.7); de expeditie ziet hem daardoor niet in InspHire Mobile en pickt hem niet. Vul het profiel in InspHire, dan is het bij de volgende upload in orde.</div>
 @endif
@@ -17,7 +20,7 @@
                     <dt class="col-5">Pickstand</dt><dd class="col-7">@if($order['pick_status'] === 'onbekend')nog niet in 8.7 @else<span class="pick {{ $order['pick_status'] }}">{{ $order['picked'] }}/{{ $order['total'] }}</span>@endif</dd>
                     <dt class="col-5">Status Smartview</dt><dd class="col-7">{{ $order['contract_status'] ?? '—' }} @if($order['offerte_status'])· offerte: {{ $order['offerte_status'] }}@endif</dd>
                     <dt class="col-5">Type</dt><dd class="col-7">{{ $order['type_raw'] ?? '—' }}</dd>
-                    <dt class="col-5">Referentie</dt><dd class="col-7">{{ $order['reference'] ?? '—' }}</dd>
+                    <dt class="col-5">Referentie</dt><dd class="col-7">{{ $order['reference'] ?? '—' }}@if(!empty($order['referentie_ontbreekt'])) <span class="badge bg-warning text-dark">ontbreekt</span>@endif</dd>
                     <dt class="col-5">Waarde</dt><dd class="col-7">{{ $order['goods_value'] !== null ? euro($order['goods_value']) : '—' }}</dd>
                     <dt class="col-5">Huurperiode</dt><dd class="col-7">{{ dmy($order['hire_start_date']) }} – {{ dmy($order['hire_end_date']) }}</dd>
                     <dt class="col-5">Aflevering</dt><dd class="col-7">{{ $order['delivery_name'] ?? '' }}<br>{{ $order['street'] ?? '' }} {{ $order['city'] ?? '' }}</dd>
