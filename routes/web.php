@@ -42,6 +42,9 @@ Route::middleware('core')->group(function () {
         Route::post('/beheer', [\App\Http\Controllers\BeheerController::class, 'opslaan'])->name('beheer.opslaan');
     });
 
+    // Managementoverzicht (managers/beheer)
+    Route::get('/overzicht', [\App\Http\Controllers\OverzichtController::class, 'index'])->name('overzicht');
+
     // Team: acties per persoon (managers/beheer)
     Route::get('/team', [TeamController::class, 'index'])->name('team');
 });
