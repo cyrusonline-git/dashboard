@@ -57,7 +57,7 @@
                         <form method="post" action="{{ route('referenties.notitie', $r['contract_number']) }}" class="ref-form">
                             @csrf
                             <div class="d-flex gap-1">
-                                <input type="text" name="gevraagd_aan" class="form-control form-control-sm" style="max-width:170px" placeholder="Gevraagd aan (naam bij klant)" title="Vul de naam in van wie je bij de klant om de PO hebt gevraagd; bij opslaan komt er een regel in het logboek bij">
+                                <input type="text" name="gevraagd_aan" class="form-control form-control-sm" style="max-width:170px" placeholder="Aan wie gevraagd? (naam bij klant)" title="Vul de naam in van wie je bij de klant om de PO hebt gevraagd; bij opslaan komt er een regel in het logboek bij">
                                 <input type="text" name="opmerking" class="form-control form-control-sm" placeholder="Opmerking (gebeld, gemaild, afspraak…)">
                                 <select name="status" class="form-select form-select-sm" style="max-width:130px">
                                     @foreach(['open'=>'Open','opgevraagd'=>'Opgevraagd','afgehandeld'=>'Afgehandeld'] as $k=>$l)<option value="{{ $k }}" @selected($r['status']===$k)>{{ $l }}</option>@endforeach
@@ -71,6 +71,8 @@
                             @if($vz)
                                 <div class="fw-semibold" style="color:#b26a00">{{ count($vz) }}× om een PO gevraagd</div>
                                 <ul class="list-unstyled mb-0 text-muted">@foreach($vz as $v)<li><i class="bi bi-telephone me-1"></i>{{ dmy($v['op']) }} aan <strong>{{ $v['aan'] ?: '?' }}</strong>@if($v['door']) door {{ $v['door'] }}@endif @if($v['opmerking'])<span class="fst-italic"> — {{ $v['opmerking'] }}</span>@endif</li>@endforeach</ul>
+                            @elseif(!empty($r['opgevraagd_op']))
+                                <div class="text-muted"><i class="bi bi-telephone me-1"></i>{{ dmy($r['opgevraagd_op']) }} opgevraagd (naam niet vastgelegd)@if(!empty($r['opmerking'])) <span class="fst-italic">— {{ $r['opmerking'] }}</span>@endif</div>
                             @elseif(!empty($r['opmerking']))
                                 <div class="text-muted fst-italic">{{ $r['opmerking'] }}</div>
                             @else
