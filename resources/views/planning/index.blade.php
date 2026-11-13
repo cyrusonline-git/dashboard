@@ -15,11 +15,11 @@
 @include('partials.stand', ['uploads' => $res['uploads'] ?? [], 'soorten' => ['planning', 'reserveringen']])
 @if($nietOpScanner > 0 && !$f['niet_op_scanner'])
 <div class="alert alert-danger py-2 d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <span><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>{{ $nietOpScanner }} {{ $nietOpScanner === 1 ? 'order staat' : 'orders staan' }} niet op de scanner van de expeditie.</strong> De kolom PickUpInfo in Smartview (8.7) is leeg, dus de expeditie ziet {{ $nietOpScanner === 1 ? 'deze order' : 'deze orders' }} niet om te picken. Vul de PickUpInfo in InspHire.</span>
+    <span><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Van {{ $nietOpScanner }} {{ $nietOpScanner === 1 ? 'order is het profiel' : 'orders zijn de profielen' }} niet ingevuld.</strong> De kolom PickUpInfo in Smartview (8.7) is leeg, dus de expeditie ziet {{ $nietOpScanner === 1 ? 'deze order' : 'deze orders' }} niet in InspHire Mobile en pickt {{ $nietOpScanner === 1 ? 'hem' : 'ze' }} niet. Vul {{ $nietOpScanner === 1 ? 'het profiel' : 'de profielen' }} in InspHire.</span>
     <a href="{{ request()->fullUrlWithQuery(['niet_op_scanner' => 1]) }}" class="btn btn-sm btn-danger">Toon {{ $nietOpScanner === 1 ? 'deze order' : 'deze orders' }}</a>
 </div>
 @elseif($f['niet_op_scanner'])
-<div class="alert alert-danger py-2 mb-3"><i class="bi bi-exclamation-triangle-fill me-1"></i>Alleen orders waarvan de kolom PickUpInfo in Smartview leeg is: de expeditie ziet ze niet op de scanner. <a href="{{ request()->fullUrlWithQuery(['niet_op_scanner' => null]) }}" class="alert-link">Alle orders tonen</a></div>
+<div class="alert alert-danger py-2 mb-3"><i class="bi bi-exclamation-triangle-fill me-1"></i>Alleen orders waarvan de profielen niet ingevuld zijn (kolom PickUpInfo in Smartview leeg): de expeditie ziet ze niet in InspHire Mobile en pickt ze niet. <a href="{{ request()->fullUrlWithQuery(['niet_op_scanner' => null]) }}" class="alert-link">Alle orders tonen</a></div>
 @endif
 
 <form class="card mb-3" method="get">
@@ -36,7 +36,7 @@
         </select>
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="mijn" value="1" @checked(request()->boolean('mijn'))> alleen mijn orders</label>
         <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="bijhuur" value="1" @checked(request()->boolean('bijhuur'))> alleen bijhuur op lopende contracten</label>
-        <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="niet_op_scanner" value="1" @checked(request()->boolean('niet_op_scanner'))> alleen niet op scanner</label>
+        <label class="form-check form-check-inline small mb-0"><input class="form-check-input" type="checkbox" name="niet_op_scanner" value="1" @checked(request()->boolean('niet_op_scanner'))> alleen profielen niet ingevuld</label>
         <button class="btn btn-sm btn-boels">Filter</button>
         <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-sm btn-outline-secondary" title="Excel/CSV"><i class="bi bi-file-earmark-spreadsheet"></i></a>
         <span class="ms-auto small text-muted">{{ $rijen->count() }} orders · {{ $rijen->where('pick_status', 'volledig')->count() }} volledig gepickt · {{ $rijen->where('pick_status', 'deels')->count() }} deels @if($transfersPerDag->isNotEmpty())· {{ $transfersPerDag->flatten(1)->count() }} transfers apart @endif</span>

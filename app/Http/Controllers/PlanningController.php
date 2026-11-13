@@ -42,7 +42,7 @@ class PlanningController extends Controller
             'perDag' => $perDag,
             'transfersPerDag' => $transfers->groupBy(fn ($r) => $r['delivery_date'] ?? 'geen'),
             'verkopers' => $rijen->pluck('employee_name', 'employee_id')->filter()->unique()->sort(),
-            // 8.7 PickUpInfo leeg = expeditie ziet de order niet op de scanner (Wim 13-11-2026)
+            // 8.7 PickUpInfo leeg = 'profiel niet ingevuld': expeditie ziet de order niet in InspHire Mobile (Wim 13-11-2026)
             'nietOpScanner' => (int) ($res['totaal']['niet_op_scanner'] ?? $rijen->where('niet_op_scanner', true)->count()),
         ]);
     }
