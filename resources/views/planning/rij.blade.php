@@ -15,7 +15,7 @@
         @elseif($o['pick_status'] === 'geen_regels')
             <span class="pick geen_regels">geen regels</span>
         @else
-            <span class="pick {{ $o['pick_status'] }}">{{ rtrim(rtrim(number_format($o['picked'], 2, ',', ''), '0'), ',') }}/{{ rtrim(rtrim(number_format($o['total'], 2, ',', ''), '0'), ',') }} gepickt</span>@if(!empty($o['bijhuur']) && ($o['nog_te_picken'] ?? 0) > 0)<div class="small text-muted">nog {{ $o['nog_te_picken'] + 0 }} te leveren</div>@endif
+            <span class="pick {{ $o['pick_status'] }}">{{ rtrim(rtrim(number_format($o['picked'], 2, ',', ''), '0'), ',') }}/{{ rtrim(rtrim(number_format($o['total'], 2, ',', ''), '0'), ',') }} gepickt</span>@if(!empty($o['bijhuur']) && ($o['nog_te_picken'] ?? 0) > 0)<div class="small fw-semibold text-danger">{{ $o['nog_te_picken'] + 0 }} te picken{{ !empty($o['datum_onbekend']) ? ' · datum: zie InspHire' : '' }}</div>@endif
         @endif
     </div>
     <div class="small">{{ $o['employee_name'] ?? $o['sales_person'] ?? $o['created_by_code'] ?? '—' }}</div>
