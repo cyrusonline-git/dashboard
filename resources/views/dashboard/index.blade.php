@@ -38,6 +38,14 @@
         <a href="{{ route('huur.avi') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#2e7d32"><i class="bi bi-cash-coin"></i></div><div><div class="kpi-value">{{ euro($summary['weekhuur']) }}</div><div class="kpi-label">weekhuur in huur (AVI) · {{ $summary['contracten'] }} contracten</div></div></div></div></a>
     </div>
     @endif
+    <div class="col-6 col-xl-3">
+        <a href="{{ route('voorraad') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#455a64"><i class="bi bi-search"></i></div><div><div class="kpi-value">{{ $voorraadOpen }}<small class="text-muted fs-6"> + {{ $voorraadOffertes }} offertes</small></div><div class="kpi-label">voorraadcheck: met niet-toegekende regels @if($aanvragenWacht)· <span class="text-warning fw-semibold">{{ $aanvragenWacht }} aanvragen wachten</span>@endif</div></div></div></div></a>
+    </div>
+    @if(!empty($vloot['upload']))
+    <div class="col-6 col-xl-3">
+        <a href="{{ route('vloot') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#FF6600"><i class="bi bi-speedometer"></i></div><div><div class="kpi-value">{{ $vloot['bezetting'] }}%</div><div class="kpi-label">bezetting vloot Industrial · {{ number_format($vloot['totalen']['beschikbaar'] ?? 0, 0, ',', '.') }} beschikbaar</div></div></div></div></a>
+    </div>
+    @endif
     @if($teamAantal !== null)
     <div class="col-6 col-xl-3">
         <a href="{{ route('team') }}" class="text-decoration-none text-reset"><div class="card kpi-tile"><div class="kpi-body"><div class="kpi-icon" style="background:#00897b"><i class="bi bi-people"></i></div><div><div class="kpi-value">{{ $teamAantal }}</div><div class="kpi-label">medewerkers in jouw team · acties per persoon</div></div></div></div></a>

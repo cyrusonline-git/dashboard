@@ -26,7 +26,14 @@ class DashboardController extends Controller
         $summary = Rollen::magAvi($rol) ? $core->api('/api/hire/summary', [], 300) : null;
         $referenties = Rollen::magFactuurrun($rol) ? $core->api('/api/hire/references', [], 120) : null;
 
+        $voorraad = collect($core->api('/api/voorraad/contracten', ['depot' => setting('voorraad_depot', '759')], 120)['data'] ?? []);
+        $vloot = $core->api('/api/vloot/stand', [], 300);
+
         return view('dashboard.index', [
+            'voorraadOpen' => $voorraad->where('is_offerte', false)->count(),
+            'voorraadOffertes' => $voorraad->where('is_offerte', true)->count(),
+            'aanvragenWacht' => \App\Models\Aanvraag::whereIn('status', \App\Models\Aanvraag::WACHT)->count(),
+            'vloot' => $vloot,
             'rol' => $rol,
             'uploads' => $uploads,
             'vandaag' => $vandaag,

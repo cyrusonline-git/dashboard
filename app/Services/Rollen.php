@@ -39,6 +39,24 @@ class Rollen
         return self::heeft(['binnendienst', 'expeditie', 'area_manager', 'bu_manager', 'admin', 'servicedesk']);
     }
 
+    /** Voorraadcheck en vlootmeters: iedereen met een dashboardrol. */
+    public static function magVoorraad(): bool
+    {
+        return self::heeft(array_keys(config('core.rollen', [])));
+    }
+
+    /** Aanvragen bij collega-depots versturen/afhandelen. */
+    public static function magAanvragen(): bool
+    {
+        return self::heeft(['binnendienst', 'servicedesk', 'expeditie', 'area_manager', 'bu_manager', 'vlootmanager', 'admin']);
+    }
+
+    /** Minimale voorraad instellen (werkplaats, vloot, managers). */
+    public static function magMinimum(): bool
+    {
+        return self::heeft(['werkplaats', 'vlootmanager', 'area_manager', 'bu_manager', 'admin']);
+    }
+
     /** employee_id van de ingelogde gebruiker volgens CORE (/api/me). */
     public static function eigenEmployeeId(): ?int
     {

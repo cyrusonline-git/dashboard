@@ -8,6 +8,12 @@ use App\Http\Controllers\RolController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
+// Reactie van een collega-depot op een materieelaanvraag: ondertekende link uit de mail, zonder CORE-login
+Route::middleware('signed')->group(function () {
+    Route::get('/aanvraag/{token}', [\App\Http\Controllers\AanvraagReactieController::class, 'toon'])->name('aanvraag.reactie');
+    Route::post('/aanvraag/{token}', [\App\Http\Controllers\AanvraagReactieController::class, 'opslaan'])->name('aanvraag.reactie.opslaan');
+});
+
 // Alles achter de CORE-login (middleware 'core' = cookie-relay naar Boels CORE)
 Route::middleware('core')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -36,6 +42,20 @@ Route::middleware('core')->group(function () {
     Route::get('/in-huur/avi', [HuurController::class, 'avi'])->name('huur.avi');
     Route::get('/in-huur/machine/{nummer}', [HuurController::class, 'machine'])->name('huur.machine');
     Route::get('/in-huur/{nr}', [HuurController::class, 'show'])->whereNumber('nr')->name('huur.show');
+
+    // Voorraadcheck (herbouw Voorraad tool): contract/project → eigen voorraad, collega-depots, aanvragen
+    Route::get('/voorraad', [\App\Http\Controllers\VoorraadController::class, 'index'])->name('voorraad');
+    Route::get('/voorraad/aanvragen', [\App\Http\Controllers\AanvraagController::class, 'index'])->name('voorraad.aanvragen');
+    Route::get('/voorraad/aanvragen/{aanvraag}', [\App\Http\Controllers\AanvraagController::class, 'show'])->whereNumber('aanvraag')->name('voorraad.aanvraag');
+    Route::post('/voorraad/aanvragen/{aanvraag}/status', [\App\Http\Controllers\AanvraagController::class, 'status'])->whereNumber('aanvraag')->name('voorraad.aanvraag.status');
+    Route::get('/voorraad/werkplaats', [\App\Http\Controllers\MinimumController::class, 'werkplaats'])->name('voorraad.werkplaats');
+    Route::get('/voorraad/minimum', [\App\Http\Controllers\MinimumController::class, 'index'])->name('voorraad.minimum');
+    Route::post('/voorraad/minimum', [\App\Http\Controllers\MinimumController::class, 'opslaan'])->name('voorraad.minimum.opslaan');
+    Route::post('/voorraad/minimum/kopieer', [\App\Http\Controllers\MinimumController::class, 'kopieer'])->name('voorraad.minimum.kopieer');
+    Route::get('/voorraad/{nr}', [\App\Http\Controllers\VoorraadController::class, 'show'])->whereNumber('nr')->name('voorraad.show');
+    Route::get('/voorraad/{nr}/aanvraag/{depot}', [\App\Http\Controllers\VoorraadController::class, 'nieuw'])->whereNumber('nr')->name('voorraad.nieuw');
+    Route::post('/voorraad/{nr}/aanvraag/{depot}', [\App\Http\Controllers\VoorraadController::class, 'verstuur'])->whereNumber('nr')->name('voorraad.verstuur');
+    Route::get('/vloot', [\App\Http\Controllers\VlootController::class, 'index'])->name('vloot');
 
     // Planbord: aankomende orders op tijd (alleen-lezen), transfers apart
     Route::get('/planbord', [\App\Http\Controllers\PlanbordController::class, 'index'])->name('planbord');
