@@ -76,7 +76,8 @@
             <div class="card-body small text-muted">
                 <strong class="text-body">Zo rekent de check</strong>
                 <ul class="mb-0 ps-3">
-                    <li><strong>Niet toegekend</strong> = huurregels uit de 3.4 die niet als "Toegekend" in de 8.A staan en geen machine hebben (TYPE Verhuur = toegekend). Verkoop, brandstof, arbeid en heffingen tellen niet mee.</li>
+                    <li><strong>Niet toegekend</strong> = huurregels in de 3.4 die nog een groepsboeking zijn (TYPE "Groep", geen machinenummer). Zodra de expeditie pickt, hangt er een machine aan en telt de regel niet meer. Verkoop, brandstof, arbeid, heffingen en wat al geleverd is (WOW) tellen niet mee.</li>
+                    <li>Een <strong>projectnummer</strong> (uit de 8.A) geeft alle contracten van het project samen.</li>
                     <li><strong>Beschikbaar</strong> = status beschikbaar in de vlootvoorraad. Reparatie telt nooit; "in onderhoud" alleen als je dat aanzet.</li>
                     <li>Niet-toegekende regels van <strong>andere contracten en offertes</strong> binnen de horizon gaan van de voorraad af.</li>
                     <li>Eerst het eigen depot, dan de collega-depots met de meeste beschikbaar.</li>
