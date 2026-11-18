@@ -6,6 +6,12 @@
     <h1><span class="soort-badge soort-{{ $order['soort'] }} me-2">{{ $order['soort'] }}</span>{{ $order['customer_name'] }} <code class="fs-6">{{ $order['order_number'] }}</code></h1>
     <p>@if(!empty($order['bijhuur']))<span class="badge rounded-pill me-1" style="background:#00897b">Bijhuur op lopend contract · {{ $order['in_huur_regels'] }} regels al in huur</span> @endif Leverdatum (aflevering) <strong>{{ dmy($order['delivery_date']) }}</strong> ({{ relatief($order['delivery_date']) }})@if(!empty($order['hire_start_date'])) · Verhuurdatum (start huur) <strong>{{ dmy($order['hire_start_date']) }}</strong>@if(!empty($order['hire_end_date'])) t/m {{ dmy($order['hire_end_date']) }} @endif @endif @if(!empty($order['delivery_date_contract']) && $order['delivery_date_contract'] !== $order['delivery_date']) · <span class="text-muted">contract gestart {{ dmy($order['delivery_date_contract']) }}</span>@endif · {{ $order['employee_name'] ?? $order['sales_person'] ?? $order['created_by_code'] ?? '' }} @if($order['te_laat'])· <span class="text-danger fw-semibold">leverdatum voorbij — op te schonen</span>@endif</p>
 </div>
+@if(!in_array($order['soort'], ['transfer_in', 'transfer_uit', 'retour'], true) && \App\Services\Rollen::magVoorraad())
+<div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+    <a href="{{ route('voorraad.show', $order['order_number']) }}" class="btn btn-boels btn-sm"><i class="bi bi-search me-1"></i>Voorraad checken voor deze {{ $order['soort'] === 'offerte' ? 'offerte' : 'order' }}</a>
+    <span class="small text-muted">Wat hebben we zelf beschikbaar, waar staat de rest en direct aanvragen bij een collega-depot.</span>
+</div>
+@endif
 @if(!empty($order['referentie_ontbreekt']))
 <div class="alert alert-warning py-2"><i class="bi bi-receipt-cutoff me-1"></i><strong>Klantreferentie of PO-nummer ontbreekt.</strong> De kolom REF van deze order is leeg of bevat "volgt" in Smartview (8.7). Vraag de referentie op bij de klant en zet die in InspHire, anders wordt de factuur niet betaald.</div>
 @endif
