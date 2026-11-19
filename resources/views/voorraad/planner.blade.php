@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('titel', 'Stockplanner')
+@section('main_klasse', 'breed')
 @push('head')
 <style>
     .sp-filter .label { font-size: .74rem; font-weight: 600; color: #5f6670; margin: 10px 0 4px; }
@@ -16,7 +17,7 @@
     .sp-tabel td.nul { background: #fff6e5; color: #b26a00; }
     .sp-tabel th.weekend, .sp-tabel td.weekend { background-image: linear-gradient(rgba(0,0,0,.025), rgba(0,0,0,.025)); }
     .sp-tabel tr.actief td { outline: 2px solid var(--boels-orange); outline-offset: -2px; }
-    .sp-wrap { max-height: 70vh; overflow: auto; }
+    .sp-wrap { max-height: 75vh; overflow: auto; }
     .mut-levering { color: #c62828; } .mut-offerte { color: #6f42c1; } .mut-gepickt { color: #ef6c00; } .mut-retour, .mut-goederen_in { color: #2e7d32; }
 </style>
 @endpush

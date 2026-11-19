@@ -28,6 +28,7 @@
         .kop-naam { color: #4b5563; text-decoration: none; }
         .rol-badge { display: inline-block; background: rgba(255,102,0,.12); color: var(--boels-orange-dark); border-radius: 10px; padding: 2px 9px; font-size: .74rem; font-weight: 600; }
         .main { max-width: 1480px; margin: 0 auto; padding: 24px 28px 48px; }
+        .main.breed { max-width: none; padding: 16px 16px 40px; }   /* brede pagina's (stockplanner): volle schermbreedte */
         @media (max-width: 767px) { .kop { padding: 0 12px; gap: 10px; } .main { padding: 14px 12px 36px; } }
         /* --- koppen & kaarten --- */
         .page-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
@@ -122,7 +123,7 @@
         @endif
     </div>
 </header>
-<main class="main">
+<main class="main @yield('main_klasse')">
     @if(session('ok'))<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>{{ session('ok') }}</div>@endif
     @if(session('fout'))<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ session('fout') }}</div>@endif
     @yield('inhoud')
