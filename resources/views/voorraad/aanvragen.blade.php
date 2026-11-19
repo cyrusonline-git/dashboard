@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('titel', 'Aanvragen')
+@section('main_klasse', 'breed')
 @section('inhoud')
 @include('voorraad._nav')
 <div class="page-header"><div><h1>Aanvragen bij collega-depots</h1><p>Alle materieelaanvragen met hun status. Een depot reageert via de knoppen in de mail. Een telefonisch akkoord zet je zelf op de detailpagina.</p></div></div>

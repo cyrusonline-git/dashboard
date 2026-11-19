@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('titel', 'Werkplaats')
+@section('main_klasse', 'breed')
 @section('inhoud')
 @include('voorraad._nav')
 <div class="page-header">

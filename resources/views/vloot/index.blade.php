@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('titel', 'Vlootmeters')
+@section('main_klasse', 'breed')
 @section('inhoud')
 @include('voorraad._nav')
 @php $t = $stand['totalen'] ?? []; @endphp
