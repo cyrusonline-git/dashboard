@@ -18,7 +18,7 @@ class StockplannerController extends Controller
         $f = $this->filters($request);
         $res = $core->api('/api/voorraad/planner', $f + ['limiet' => 400], 120) ?? [];
         $detail = $request->filled('subgroep')
-            ? $core->api('/api/voorraad/planner/'.rawurlencode($request->input('subgroep')), array_intersect_key($f, array_flip(['depot', 'horizon', 'retour_dagen', 'offertes', 'onderhoud'])), 120)
+            ? $core->api('/api/voorraad/planner/'.rawurlencode($request->input('subgroep')), array_intersect_key($f, array_flip(['depot', 'horizon', 'retour_dagen', 'offertes', 'onderhoud', 'reparatie'])), 120)
             : null;
         $vloot = $core->api('/api/vloot/stand', [], 300) ?? [];
         $depots = collect($vloot['per_depot'] ?? [])->mapWithKeys(fn ($d) => [$d['depot'] => $d['depot'].($d['naam'] ? ' · '.$d['naam'] : '')])->sortKeys();
@@ -35,6 +35,7 @@ class StockplannerController extends Controller
             'retour_dagen' => in_array((int) $r->input('retour_dagen', 14), [0, 7, 14, 21], true) ? (int) $r->input('retour_dagen', 14) : 14,
             'offertes' => $r->input('offertes', '1') === '0' ? '0' : '1',
             'onderhoud' => $r->input('onderhoud') === '1' ? '1' : '0',
+            'reparatie' => $r->input('reparatie') === '1' ? '1' : '0',
             'alleen_tekort' => $r->input('alleen_tekort', '1') === '0' ? '0' : '1',
             'alleen_mutaties' => $r->input('alleen_mutaties', '1') === '0' ? '0' : '1',
             'zonder_vloot' => $r->input('zonder_vloot') === '1' ? '1' : '0',
