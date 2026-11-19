@@ -2,6 +2,7 @@
 @php
 $tabs = [
     ['voorraad', 'bi-search', 'Voorraadcheck'],
+    ['voorraad.planner', 'bi-calendar3-range', 'Stockplanner'],
     ['voorraad.aanvragen', 'bi-envelope-paper', 'Aanvragen'],
     ['voorraad.werkplaats', 'bi-tools', 'Werkplaats'],
     ['voorraad.minimum', 'bi-sliders', 'Minimumvoorraad'],

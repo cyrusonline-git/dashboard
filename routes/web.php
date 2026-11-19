@@ -52,6 +52,7 @@ Route::middleware('core')->group(function () {
     Route::get('/voorraad/minimum', [\App\Http\Controllers\MinimumController::class, 'index'])->name('voorraad.minimum');
     Route::post('/voorraad/minimum', [\App\Http\Controllers\MinimumController::class, 'opslaan'])->name('voorraad.minimum.opslaan');
     Route::post('/voorraad/minimum/kopieer', [\App\Http\Controllers\MinimumController::class, 'kopieer'])->name('voorraad.minimum.kopieer');
+    Route::get('/voorraad/planner', [\App\Http\Controllers\StockplannerController::class, 'index'])->name('voorraad.planner');
     Route::get('/voorraad/{nr}', [\App\Http\Controllers\VoorraadController::class, 'show'])->whereNumber('nr')->name('voorraad.show');
     Route::get('/voorraad/{nr}/aanvraag/{depot}', [\App\Http\Controllers\VoorraadController::class, 'nieuw'])->whereNumber('nr')->name('voorraad.nieuw');
     Route::post('/voorraad/{nr}/aanvraag/{depot}', [\App\Http\Controllers\VoorraadController::class, 'verstuur'])->whereNumber('nr')->name('voorraad.verstuur');
