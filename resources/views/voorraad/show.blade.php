@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('titel', 'Voorraadcheck '.$nr)
+@section('main_klasse', 'breed')
 @section('inhoud')
 @include('voorraad._nav')
 @php $kop = collect($c['kop'] ?? []); @endphp
