@@ -64,7 +64,8 @@
             <div class="label">Einde huur als…</div>{!! $seg('retour_dagen', ['0' => 'einddatum', '7' => '+7 d', '14' => '+14 d']) !!}
             <div class="label">Offertes meetellen?</div>{!! $seg('offertes', ['1' => 'Ja', '0' => 'Nee']) !!}
             <div class="label">"In onderhoud" als voorraad?</div>{!! $seg('onderhoud', ['0' => 'Nee', '1' => 'Ja']) !!}
-            <div class="label">Alleen met mutaties?</div>{!! $seg('alleen_mutaties', ['1' => 'Ja', '0' => 'Alles']) !!}
+            <div class="label">Welke subgroepen tonen?</div>{!! $seg('alleen_mutaties', ['1' => 'Met leveringen/retouren', '0' => 'Alle in het depot']) !!}
+            <div class="small text-muted mt-1">"Met leveringen/retouren": alleen subgroepen waar in deze periode iets in- of uitgaat. "Alle in het depot": ook subgroepen die alleen op voorraad staan.</div>
             <div class="label">Artikelen zonder vlootgegevens?</div>{!! $seg('zonder_vloot', ['0' => 'Verbergen', '1' => 'Tonen']) !!}
             <div class="small text-muted mt-3">
                 Vloot {{ !empty($stand['vloot']['moment']) ? \Carbon\Carbon::parse($stand['vloot']['moment'])->format('d-m H:i') : '—' }}<br>
