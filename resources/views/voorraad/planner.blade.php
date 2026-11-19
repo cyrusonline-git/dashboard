@@ -17,7 +17,7 @@
     .sp-tabel th.weekend, .sp-tabel td.weekend { background-image: linear-gradient(rgba(0,0,0,.025), rgba(0,0,0,.025)); }
     .sp-tabel tr.actief td { outline: 2px solid var(--boels-orange); outline-offset: -2px; }
     .sp-wrap { max-height: 70vh; overflow: auto; }
-    .mut-levering { color: #c62828; } .mut-offerte { color: #6f42c1; } .mut-gepickt { color: #ef6c00; } .mut-retour { color: #2e7d32; }
+    .mut-levering { color: #c62828; } .mut-offerte { color: #6f42c1; } .mut-gepickt { color: #ef6c00; } .mut-retour, .mut-goederen_in { color: #2e7d32; }
 </style>
 @endpush
 @section('inhoud')
@@ -146,6 +146,8 @@
                         <tr>
                             <th class="sticky">Subgroep</th>
                             <th class="text-end" title="Nu beschikbaar{{ $f['onderhoud'] === '1' ? ' + in onderhoud' : '' }}">Nu</th>
+                            <th class="text-end text-muted" title="In onderhoud (telt alleen mee als 'In onderhoud als voorraad' op Ja staat)">Onderh.</th>
+                            <th class="text-end text-muted" title="In reparatie (telt nooit mee)">Rep.</th>
                             <th class="text-end" title="Totaal eraf in de periode">Uit</th>
                             <th class="text-end" title="Totaal retour in de periode">In</th>
                             @foreach($kol as $k)<th class="text-end {{ !empty($k['weekend']) ? 'weekend' : '' }}">{{ $k['label'] }}<div class="text-muted fw-normal">{{ $k['sub'] }}</div></th>@endforeach
@@ -156,6 +158,8 @@
                         <tr class="{{ request('subgroep') === $r['subgroep'] ? 'actief' : '' }}" onclick="location='{{ request()->fullUrlWithQuery(['subgroep' => $r['subgroep']]) }}'" style="cursor:pointer">
                             <td class="sticky" title="{{ $r['omschrijving'] }}"><code>{{ $r['subgroep'] }}</code> {{ $r['omschrijving'] }}@if(!$r['in_vloot']) <span class="badge bg-secondary">niet in vloot</span>@endif</td>
                             <td class="c fw-semibold">{{ $r['start'] }}</td>
+                            <td class="c text-muted">{{ $r['onderhoud'] ?: '' }}</td>
+                            <td class="c text-muted">{{ ($r['reparatie'] ?? 0) ?: '' }}</td>
                             <td class="c text-danger">{{ $r['uit'] ?: '' }}</td>
                             <td class="c text-success">{{ $r['in'] ?: '' }}</td>
                             @foreach($r['reeks'] as $i => $w)
@@ -163,7 +167,7 @@
                             @endforeach
                         </tr>
                     @empty
-                        <tr><td colspan="{{ 4 + count($kol) }}" class="text-center text-muted py-4">{{ $f['alleen_tekort'] === '1' ? 'Geen tekorten in deze periode.' : 'Geen subgroepen gevonden.' }}</td></tr>
+                        <tr><td colspan="{{ 6 + count($kol) }}" class="text-center text-muted py-4">{{ $f['alleen_tekort'] === '1' ? 'Geen tekorten in deze periode.' : 'Geen subgroepen gevonden.' }}</td></tr>
                     @endforelse
                     </tbody>
                 </table>
@@ -172,7 +176,7 @@
             @endif
         </div>
         <p class="small text-muted mt-2 mb-0">
-            <strong>Zo rekent de planner.</strong> Nu = beschikbaar in de vlootvoorraad. Eraf: contractregels die nog niet gepickt zijn (3.4, groepsboeking), offertes en gepickte machines die nog niet geleverd zijn, op hun leverdatum. Achterstallige regels tellen vanaf vandaag. Erbij: lopende huur met een bekende einddatum (ophaal- of verwachte retourdatum), plus de gekozen verwerkingstijd. Lopende huur zonder einddatum komt in deze periode niet terug. Per week toont de planner het laagste punt van die week.
+            <strong>Zo rekent de planner.</strong> Nu = beschikbaar in de vlootvoorraad (Onderh. telt alleen mee als je dat aanzet; Rep. nooit). Eraf: contractregels die nog niet gepickt zijn (3.4, groepsboeking), offertes en gepickte machines die nog niet geleverd zijn, op hun leverdatum. Achterstallige regels tellen vanaf vandaag. Erbij: lopende huur met een bekende einddatum (ophaal- of verwachte retourdatum) en machines die al retour zijn (goederen-in, 0.05) maar in de vloot nog als verhuurd staan, telkens plus de gekozen verwerkingstijd. Depottransfers tellen (nog) niet mee: de uploads vermelden niet welke subgroepen erin zitten. Lopende huur zonder einddatum komt in deze periode niet terug. Per week toont de planner het laagste punt van die week.
         </p>
     </div>
 </div>
