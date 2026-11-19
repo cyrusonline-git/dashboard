@@ -61,7 +61,7 @@
             <div class="label">Alleen tekorten?</div>{!! $seg('alleen_tekort', ['1' => 'Ja', '0' => 'Nee']) !!}
             <div class="label">Periode</div>{!! $seg('horizon', ['14' => '2 wk', '28' => '4 wk', '56' => '8 wk', '91' => '13 wk']) !!}
             <div class="label">Weergave</div>{!! $seg('per', ['dag' => 'Per dag', 'week' => 'Per week']) !!}
-            <div class="label">Einde huur als…</div>{!! $seg('retour_dagen', ['0' => 'einddatum', '7' => '+7 d', '14' => '+14 d']) !!}
+            <div class="label">Einde huur als…</div>{!! $seg('retour_dagen', ['0' => 'einddatum', '3' => '+3 d', '7' => '+7 d', '14' => '+14 d']) !!}
             <div class="label">Offertes meetellen?</div>{!! $seg('offertes', ['1' => 'Ja', '0' => 'Nee']) !!}
             <div class="label">"In onderhoud" als voorraad?</div>{!! $seg('onderhoud', ['0' => 'Nee', '1' => 'Ja']) !!}
             <div class="label">"In reparatie" als voorraad?</div>{!! $seg('reparatie', ['0' => 'Nee', '1' => 'Ja']) !!}

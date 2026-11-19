@@ -32,7 +32,8 @@ class StockplannerController extends Controller
             'depot' => (string) ($r->input('depot') ?: setting('voorraad_depot', '759')),
             'horizon' => (int) ($r->input('horizon') ?: 28),
             'per' => $r->input('per') === 'week' ? 'week' : 'dag',
-            'retour_dagen' => in_array((int) $r->input('retour_dagen', 14), [0, 7, 14, 21], true) ? (int) $r->input('retour_dagen', 14) : 14,
+            // standaard 3 dagen verwerkingstijd na einde huur / goederen-in (Wim 20-11-2026)
+            'retour_dagen' => in_array((int) $r->input('retour_dagen', 3), [0, 3, 7, 14, 21], true) ? (int) $r->input('retour_dagen', 3) : 3,
             'offertes' => $r->input('offertes', '1') === '0' ? '0' : '1',
             'onderhoud' => $r->input('onderhoud') === '1' ? '1' : '0',
             'reparatie' => $r->input('reparatie') === '1' ? '1' : '0',
